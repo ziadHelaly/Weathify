@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -9,15 +11,29 @@ plugins {
 }
 
 android {
+
     namespace = "eg.edu.iti.weathify"
     compileSdk = 35
+    buildFeatures {
 
+        buildConfig = true
+    }
     defaultConfig {
         applicationId = "eg.edu.iti.weathify"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
+
+        val localProperties = Properties().apply {
+            val localFile = rootProject.file("local.properties")
+            if (localFile.exists()) {
+                load(localFile.inputStream())
+            }
+        }
+        val apiKey: String = localProperties.getProperty("MY_API_KEY") ?: ""
+
+        buildConfigField("String", "MY_API_KEY", "\"$apiKey\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -53,6 +69,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.play.services.location)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -88,4 +105,6 @@ dependencies {
     //LiveData & Compose
     val compose_version = "1.0.0"
     implementation("androidx.compose.runtime:runtime-livedata:$compose_version")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.1")
+
 }
