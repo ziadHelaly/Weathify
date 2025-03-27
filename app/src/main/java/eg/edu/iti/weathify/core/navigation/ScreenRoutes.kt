@@ -4,6 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 sealed class ScreenRoutes {
-
-
+    @Serializable
+    object HomeScreenRoute : ScreenRoutes()
 }
