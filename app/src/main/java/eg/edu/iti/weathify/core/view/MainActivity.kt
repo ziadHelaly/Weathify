@@ -18,6 +18,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
 import eg.edu.iti.weathify.core.navigation.NavComponent
+import eg.edu.iti.weathify.core.navigation.NavigationBottomBar
 import eg.edu.iti.weathify.core.navigation.ScreenRoutes
 import eg.edu.iti.weathify.core.view.theme.WeathifyTheme
 import eg.edu.iti.weathify.utils.Constants.Companion.permissionRequestCode
@@ -39,18 +40,21 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             WeathifyTheme {
+                val navController = rememberNavController()
                 Scaffold(
+                    bottomBar = { NavigationBottomBar(navController) },
                     modifier = Modifier.fillMaxSize()
                 ) { innerPadding ->
                     longitude = rememberSaveable { mutableStateOf("0.0") }
                     latitude = rememberSaveable { mutableStateOf("0.0") }
-                    val navController = rememberNavController()
                     NavComponent(
                         navHostController = navController,
                         startDestination = ScreenRoutes.HomeScreenRoute,
                         lat = latitude,
                         lon = longitude,
-                        modifier = Modifier.padding(innerPadding)
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(innerPadding)
                     )
                 }
             }

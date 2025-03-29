@@ -1,5 +1,7 @@
 package eg.edu.iti.weathify.core.navigation
 
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
@@ -24,7 +26,8 @@ fun NavComponent(
 ) {
     NavHost(
         navController = navHostController,
-        startDestination = startDestination
+        startDestination = startDestination,
+        modifier = modifier
     ) {
         val repo = WeatherRepositoryImpl.getInstance(
             WeatherRemoteDataSourceImpl(RetrofitHelper.serviceApi),
@@ -32,6 +35,18 @@ fun NavComponent(
         )
         composable<ScreenRoutes.HomeScreenRoute> {
             HomeScreen(long = lon, lat = lat, viewModel(factory = HomeViewModelFactory(repo)))
+        }
+        composable<ScreenRoutes.FavScreenRoute> {
+//            HomeScreen(long = lon, lat = lat, viewModel(factory = HomeViewModelFactory(repo)))
+            Text("fav")
+        }
+        composable<ScreenRoutes.AlarmScreenRoute> {
+//            HomeScreen(long = lon, lat = lat, viewModel(factory = HomeViewModelFactory(repo)))
+            Text("alr")
+        }
+        composable<ScreenRoutes.SettingScreenRoute> {
+//            HomeScreen(long = lon, lat = lat, viewModel(factory = HomeViewModelFactory(repo)))
+            Text("set")
         }
     }
 }
