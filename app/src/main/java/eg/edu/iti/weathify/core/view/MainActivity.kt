@@ -10,8 +10,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
@@ -28,8 +29,8 @@ import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     private var showSplash = true
-    private var longitude = mutableStateOf("0.0")
-    private var latitude = mutableStateOf("0.0")
+    private lateinit var longitude: MutableState<String>
+    private lateinit var latitude: MutableState<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen().setKeepOnScreenCondition { showSplash }
@@ -41,12 +42,14 @@ class MainActivity : ComponentActivity() {
                 Scaffold(
                     modifier = Modifier.fillMaxSize()
                 ) { innerPadding ->
+                    longitude = rememberSaveable { mutableStateOf("0.0") }
+                    latitude = rememberSaveable { mutableStateOf("0.0") }
                     val navController = rememberNavController()
                     NavComponent(
                         navHostController = navController,
                         startDestination = ScreenRoutes.HomeScreenRoute,
-                        lat = latitude.value,
-                        lon = longitude.value,
+                        lat = latitude,
+                        lon = longitude,
                         modifier = Modifier.padding(innerPadding)
                     )
                 }

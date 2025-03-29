@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">Weathify</string>
+    <string name="wind_speed">wind speed</string>
+    <string name="humidity">humidity</string>
+    <string name="very_weak">Very Weak</string>
+    <string name="uv">UV</string>
+    <string name="air_pressure">Air Pressure</string>
+    <string name="km_h">km/h</string>
+    <string name="c">°c</string>
+    <string name="hpa">hPa</string>
+    <string name="next_24_hours">Next 24 Hours</string>
+    <string name="next_7_days">Next 7 days</string>
+    <string name="today">Today</string>
+    <string name="tomorrow">Tomorrow</string>
 </resources>
