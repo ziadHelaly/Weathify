@@ -46,5 +46,10 @@ class HomeViewModel(private val repository: WeatherRepository) : ViewModel() {
         val formatter = SimpleDateFormat("EEE", Locale.getDefault())
         return formatter.format(dt)
     }
+    fun format24(timestamp: Long): String {
+        val dt = Date(timestamp * 1000)
+        val formatter = SimpleDateFormat("HH", Locale.getDefault())
+        return formatter.format(dt)
+    }
 
 }

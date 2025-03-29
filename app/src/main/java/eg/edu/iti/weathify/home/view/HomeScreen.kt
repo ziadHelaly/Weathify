@@ -36,6 +36,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
@@ -118,12 +119,18 @@ private fun Screen(
         modifier = Modifier
             .fillMaxSize()
     ) {
+
         Image(
-            painter = painterResource(R.drawable.ic_background),
+            painter =
+            if (viewModel.format24(current.current.dt.toLong())
+                    .toInt() in 6..18
+            ) painterResource(R.drawable.ic_day)
+            else painterResource(R.drawable.ic_background),
             "",
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxSize()
+                .alpha(0.5f)
 
         )
         Column(
@@ -191,7 +198,7 @@ private fun ForeCastSection(current: Current, modifier: Modifier = Modifier) {
         ForeCastItem(
             painterResource(R.drawable.ic_wind),
             stringResource(R.string.wind_speed),
-            toKmH(current.wind_speed).toString().substring(0,4),
+            toKmH(current.wind_speed).toString().substring(0, 4),
             stringResource(R.string.km_h)
         )
 
