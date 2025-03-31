@@ -1,24 +1,23 @@
-package eg.edu.iti.weathify.core.navigation
+package eg.edu.iti.weathify.core.view.components
 
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
-import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
+import eg.edu.iti.weathify.core.navigation.navigationItems
 
 @Composable
 fun NavigationBottomBar(navController: NavController, modifier: Modifier = Modifier) {
     val selected = rememberSaveable { mutableIntStateOf(0) }
     NavigationBar(
-        containerColor = Color.White.copy(alpha = 0.5f)
+        containerColor = Color.White.copy(alpha = 0.0f)
     ) {
         navigationItems.forEachIndexed { index, navigationItem ->
             NavigationBarItem(

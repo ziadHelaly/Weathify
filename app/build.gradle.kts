@@ -107,4 +107,8 @@ dependencies {
     implementation("androidx.compose.runtime:runtime-livedata:$compose_version")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.1")
 
+    //OSM maps
+    implementation("org.osmdroid:osmdroid-android:6.1.16")
+
+
 }
