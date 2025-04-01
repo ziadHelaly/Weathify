@@ -30,7 +30,7 @@ fun NavigationBottomBar(navController: NavController, modifier: Modifier = Modif
                     Icon(
                         painterResource(navigationItem.icon),
                         "",
-                        tint = if (selected.intValue == index) Color.Black else Color.White
+//                        tint = if (selected.intValue == index) Color.Black else Color.White
                     )
                 },
                 alwaysShowLabel = false,

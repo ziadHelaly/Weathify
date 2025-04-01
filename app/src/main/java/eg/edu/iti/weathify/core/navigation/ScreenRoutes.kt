@@ -8,7 +8,7 @@ sealed class ScreenRoutes {
     object MapScreenRoute :ScreenRoutes()
 
     @Serializable
-    object HomeScreenRoute : ScreenRoutes()
+    data class HomeScreenRoute(val lon:String?,val lat:String?) : ScreenRoutes()
 
     @Serializable
     object FavScreenRoute : ScreenRoutes()

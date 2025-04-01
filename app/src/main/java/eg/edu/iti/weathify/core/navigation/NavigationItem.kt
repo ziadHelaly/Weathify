@@ -10,7 +10,7 @@ data class NavigationItem(
 )
 
 val navigationItems = listOf(
-    NavigationItem("Home", true, R.drawable.ic_home, ScreenRoutes.HomeScreenRoute),
+    NavigationItem("Home", true, R.drawable.ic_home, ScreenRoutes.HomeScreenRoute(null,null)),
     NavigationItem("Favourite", false, R.drawable.ic_favorite, ScreenRoutes.FavScreenRoute),
     NavigationItem("Alarm", false, R.drawable.ic_notifications, ScreenRoutes.AlarmScreenRoute),
     NavigationItem("Settings", false, R.drawable.ic_settings, ScreenRoutes.SettingScreenRoute)
