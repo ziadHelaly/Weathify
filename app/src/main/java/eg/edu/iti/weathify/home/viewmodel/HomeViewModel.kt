@@ -1,10 +1,7 @@
 package eg.edu.iti.weathify.home.viewmodel
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import eg.edu.iti.weathify.core.model.models.Current
 import eg.edu.iti.weathify.core.model.models.WeatherResponse
 import eg.edu.iti.weathify.core.model.repo.WeatherRepository
 import eg.edu.iti.weathify.utils.Result
@@ -15,6 +12,7 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 
 
 class HomeViewModel(private val repository: WeatherRepository) : ViewModel() {
@@ -31,25 +29,20 @@ class HomeViewModel(private val repository: WeatherRepository) : ViewModel() {
             }
         }
     }
-    fun formatDate(timestamp: Long): String {
-        val dt = Date(timestamp * 1000)
-        val formatter = SimpleDateFormat("EEE, MMM yyyy", Locale.getDefault())
-        return formatter.format(dt)
-    }
-    fun formatHour(timestamp: Long): String {
-        val dt = Date(timestamp * 1000)
-        val formatter = SimpleDateFormat("hh:mm a", Locale.getDefault())
-        return formatter.format(dt)
-    }
-    fun formatDay(timestamp: Long): String {
-        val dt = Date(timestamp * 1000)
-        val formatter = SimpleDateFormat("EEE", Locale.getDefault())
-        return formatter.format(dt)
-    }
-    fun format24(timestamp: Long): String {
-        val dt = Date(timestamp * 1000)
-        val formatter = SimpleDateFormat("HH", Locale.getDefault())
-        return formatter.format(dt)
-    }
 
+    fun formatTime(timestamp: Long, formatType: FormatTypes, timeZone: String): String {
+        val dt = Date(timestamp * 1000)
+        val formatter = SimpleDateFormat(
+            when (formatType) {
+                FormatTypes.date -> "EEE, MMM yyyy"
+                FormatTypes.hour -> "hh:mm a"
+                FormatTypes.day -> "EEE"
+                FormatTypes.hour24 -> "HH"
+                FormatTypes.All -> "EEE, MMM yyyy , HH:mm"
+            }, Locale.getDefault()
+        )
+        formatter.timeZone = TimeZone.getTimeZone(timeZone)
+
+        return formatter.format(dt)
+    }
 }

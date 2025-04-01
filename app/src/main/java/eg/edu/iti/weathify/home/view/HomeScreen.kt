@@ -5,7 +5,6 @@ import android.content.Context
 import android.location.Geocoder
 import android.util.Log
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,8 +18,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
@@ -54,6 +51,7 @@ import eg.edu.iti.weathify.core.model.models.Current
 import eg.edu.iti.weathify.core.model.models.Daily
 import eg.edu.iti.weathify.core.model.models.Hourly
 import eg.edu.iti.weathify.core.model.models.WeatherResponse
+import eg.edu.iti.weathify.home.viewmodel.FormatTypes
 import eg.edu.iti.weathify.home.viewmodel.HomeViewModel
 import eg.edu.iti.weathify.utils.Constants.Companion.imageLink
 import eg.edu.iti.weathify.utils.ConvertUnitsUtil.toKmH
@@ -119,18 +117,27 @@ private fun Screen(
         modifier = Modifier
             .fillMaxSize()
     ) {
-
+        Log.d(
+            "``TAG``",
+            "Screen: time ${current.current.dt}  \t  ${
+                viewModel.formatTime(
+                    current.current.dt.toLong(),
+                    FormatTypes.All,current.timezone
+                )
+            }"
+        )
         Image(
             painter =
-            if (viewModel.format24(current.current.dt.toLong())
-                    .toInt() in 6..18
-            ) painterResource(R.drawable.ic_day)
-            else painterResource(R.drawable.ic_background),
+            if (viewModel.formatTime(current.current.dt.toLong(), FormatTypes.hour24,current.timezone)
+                    .toInt() in 6..17
+            ) {
+                painterResource(R.drawable.ic_day)
+            } else painterResource(R.drawable.ic_background),
             "",
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxSize()
-                .alpha(0.5f)
+                .alpha(0.8f)
 
         )
         Column(
@@ -144,11 +151,11 @@ private fun Screen(
             LocationSection(country = country)
             DegreeSection(
                 current.current,
-                date = viewModel.formatDate(current.current.dt.toLong())
+                date = viewModel.formatTime(current.current.dt.toLong(), FormatTypes.date,current.timezone)
             )
             ForeCastSection(current.current)
-            HourlySection(current.hourly, viewModel)
-            DailySection(viewModel, current.daily)
+            HourlySection(current.hourly, viewModel,current)
+            DailySection(viewModel, current.daily,current)
         }
     }
 
@@ -245,13 +252,14 @@ private fun LocationSection(country: String, modifier: Modifier = Modifier) {
 private fun HourlySection(
     hours: List<Hourly>,
     viewModel: HomeViewModel,
+    current: WeatherResponse,
     modifier: Modifier = Modifier
 ) {
     Text(stringResource(R.string.next_24_hours), fontSize = 16.sp, fontWeight = FontWeight.Bold)
     LazyRow {
         items(hours.subList(0, 25)) { hour ->
             HourCard(
-                time = viewModel.formatHour(hour.dt.toLong()),
+                time = viewModel.formatTime(hour.dt.toLong(), FormatTypes.hour,current.timezone),
                 temp = hour.temp.toInt().toString(),
                 icon = hour.weather[0].icon
             )
@@ -302,6 +310,7 @@ private fun HourCard(
 private fun DailySection(
     viewModel: HomeViewModel,
     days: List<Daily>,
+    current: WeatherResponse,
     modifier: Modifier = Modifier
 ) {
     Text(stringResource(R.string.next_7_days), fontSize = 16.sp, fontWeight = FontWeight.Bold)
@@ -320,7 +329,7 @@ private fun DailySection(
                     dayTitle = when (i) {
                         0 -> stringResource(R.string.today)
                         1 -> stringResource(R.string.tomorrow)
-                        else -> viewModel.formatDay(day.dt.toLong())
+                        else -> viewModel.formatTime(day.dt.toLong(), FormatTypes.day,current.timezone)
                     },
                     description = day.weather[0].description,
                     icon = day.weather[0].icon,
