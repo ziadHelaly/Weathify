@@ -12,4 +12,7 @@
     <string name="next_7_days">Next 7 days</string>
     <string name="today">Today</string>
     <string name="tomorrow">Tomorrow</string>
+    <string name="add_to_fav">Add to Fav</string>
+    <string name="favourites_cities">Favourites Cities</string>
+    <string name="search_city">Search City</string>
 </resources>
