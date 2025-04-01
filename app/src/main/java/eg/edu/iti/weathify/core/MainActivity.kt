@@ -1,4 +1,4 @@
-package eg.edu.iti.weathify.core.view
+package eg.edu.iti.weathify.core
 
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.content.pm.PackageManager
@@ -23,8 +23,10 @@ import androidx.navigation.compose.rememberNavController
 import eg.edu.iti.weathify.core.navigation.NavComponent
 import eg.edu.iti.weathify.core.view.components.NavigationBottomBar
 import eg.edu.iti.weathify.core.navigation.ScreenRoutes
-import eg.edu.iti.weathify.core.view.theme.WeathifyTheme
-import eg.edu.iti.weathify.core.view.theme.screenBG
+import eg.edu.iti.weathify.core.view.showDialogForAskAgain
+import eg.edu.iti.weathify.core.view.showDialogForGPS
+import eg.edu.iti.weathify.core.view.showDialogGoToSettings
+import eg.edu.iti.weathify.ui.theme.WeathifyTheme
 import eg.edu.iti.weathify.utils.Constants.Companion.permissionRequestCode
 import eg.edu.iti.weathify.utils.LocationUtil.getLocation
 import eg.edu.iti.weathify.utils.LocationUtil.isGPSOpened
@@ -63,12 +65,11 @@ class MainActivity : ComponentActivity() {
                     Log.d("``TAG``", "onCreate: dfghjkl;")
                     NavComponent(
                         navHostController = navController,
-                        startDestination = ScreenRoutes.HomeScreenRoute,
+                        startDestination = ScreenRoutes.HomeScreenRoute(null,null),
                         lat = latitude,
                         lon = longitude,
                         modifier = Modifier
                             .fillMaxSize()
-                            .background(screenBG)
                             .padding(innerPadding)
                     )
                 }
@@ -92,7 +93,7 @@ class MainActivity : ComponentActivity() {
 
         } else {
             Log.d("`TAG`", "onStart: false")
-            requestPermissions(this@MainActivity)
+            eg.edu.iti.weathify.core.view.requestPermissions(this@MainActivity)
 
         }
     }

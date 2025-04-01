@@ -1,10 +1,14 @@
 package eg.edu.iti.weathify.core.model.remote
 
 import eg.edu.iti.weathify.BuildConfig
+import eg.edu.iti.weathify.core.model.models.SearchResponse
 import eg.edu.iti.weathify.core.model.models.WeatherResponse
 import eg.edu.iti.weathify.utils.Result
 
-class WeatherRemoteDataSourceImpl(private val serviceApi: ServiceApi) : WeatherRemoteDataSource {
+class WeatherRemoteDataSourceImpl(
+    private val serviceApi: ServiceApi,
+    private val searchApi: SearchApi
+) : WeatherRemoteDataSource {
     override suspend fun getAllWeatherData(lat: String, lon: String): Result<WeatherResponse> {
 
         return try {
@@ -20,5 +24,9 @@ class WeatherRemoteDataSourceImpl(private val serviceApi: ServiceApi) : WeatherR
         } catch (e: Exception) {
             Result.Failure(e.message.toString())
         }
+    }
+
+    override suspend fun searchCity(city: String): List<SearchResponse> {
+        return searchApi.searchCity(city)
     }
 }
