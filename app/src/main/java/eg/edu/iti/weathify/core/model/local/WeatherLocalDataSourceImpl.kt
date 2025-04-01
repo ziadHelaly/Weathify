@@ -1,10 +1,12 @@
 package eg.edu.iti.weathify.core.model.local
 
+import android.content.SharedPreferences
 import eg.edu.iti.weathify.core.model.models.FavouritePlace
 import kotlinx.coroutines.flow.Flow
 
 class WeatherLocalDataSourceImpl(
-    private val favouritesDao: FavouritesDao
+    private val favouritesDao: FavouritesDao,
+    private val sharedPreferences: SharedPreferences
 ) : WeatherLocalDataSource {
 
     override suspend fun getAllFavourites(): Flow<List<FavouritePlace>> {
@@ -18,5 +20,14 @@ class WeatherLocalDataSourceImpl(
     override suspend fun removeFromFav(place: FavouritePlace): Int {
         return favouritesDao.removeFromFavourite(place)
     }
+
+    override fun saveInSharedPref(key: String, value: String) {
+        sharedPreferences.edit().putString(key, value).apply()
+    }
+
+    override fun getFromSharedPref(key: String): String? {
+        return sharedPreferences.getString(key,"N/A")
+    }
+
 
 }

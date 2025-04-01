@@ -40,9 +40,11 @@ class WeatherRepositoryImpl private constructor(
     override suspend fun getFavourites(): Flow<List<FavouritePlace>> {
         return localDataSource.getAllFavourites()
     }
+
     override suspend fun addPlaceToFav(place: FavouritePlace): Long {
         return localDataSource.addPlaceToFav(place)
     }
+
     override suspend fun removePlaceFromFav(place: FavouritePlace): Int {
         return localDataSource.removeFromFav(place)
     }
@@ -57,5 +59,11 @@ class WeatherRepositoryImpl private constructor(
         }
     }
 
+    override fun getFromSharedPref(key: String): String? {
+        return localDataSource.getFromSharedPref(key)
+    }
 
+    override fun saveInSharedPref(key: String, value: String) {
+        localDataSource.saveInSharedPref(key, value)
+    }
 }

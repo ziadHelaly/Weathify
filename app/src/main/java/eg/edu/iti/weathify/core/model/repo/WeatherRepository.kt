@@ -15,4 +15,7 @@ interface WeatherRepository {
     suspend fun removePlaceFromFav(place: FavouritePlace): Int
 
     fun getCities(query: String): Flow<List<SearchResponse>>
+
+    fun getFromSharedPref(key: String): String?
+    fun saveInSharedPref(key: String, value: String)
 }

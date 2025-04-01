@@ -1,20 +1,17 @@
-import androidx.compose.foundation.background
+package eg.edu.iti.weathify.map.view
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import eg.edu.iti.weathify.R
-import eg.edu.iti.weathify.core.model.models.FavouritePlace
-import eg.edu.iti.weathify.map.view.OpenStreetMapView
 import eg.edu.iti.weathify.map.viewModel.MapViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -31,8 +28,8 @@ fun MapScreen(viewModel: MapViewModel, modifier: Modifier = Modifier, onNavBack:
             OpenStreetMapView(lat, lon, Modifier.fillMaxSize()) { longitude, latitude ->
 
                 viewModel.selectLocation(
-                    lat=latitude,
-                    lon=longitude,
+                    lat = latitude,
+                    lon = longitude,
                     name = "usa"
                 )
             }

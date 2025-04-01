@@ -18,12 +18,10 @@ import org.osmdroid.views.overlay.Marker
 fun OpenStreetMapView(lat: Double, lon: Double, modifier: Modifier = Modifier,updateSelectedLocation:(Double,Double)->Unit) {
     val context = LocalContext.current
 
-    // Load the OsmDroid configuration
     LaunchedEffect(Unit) {
         Configuration.getInstance().load(context, context.getSharedPreferences("osmdroid", Context.MODE_PRIVATE))
     }
 
-    // Always track the latest location
     val geoPoint = remember(lat, lon) { GeoPoint(lat, lon) }
 
     val mapView = remember {
@@ -38,7 +36,6 @@ fun OpenStreetMapView(lat: Double, lon: Double, modifier: Modifier = Modifier,up
         mapController.setZoom(10.0)
         mapController.setCenter(geoPoint)
 
-        // Function to update marker
         fun updateMarker(location: GeoPoint) {
             map.overlays.clear()
             val marker = Marker(map).apply {
@@ -50,10 +47,8 @@ fun OpenStreetMapView(lat: Double, lon: Double, modifier: Modifier = Modifier,up
             map.invalidate()
         }
 
-        // Update when lat/lon change
         updateMarker(geoPoint)
 
-        // Add tap listener using MapEventsOverlay
         val overlayEvents = object : MapEventsReceiver {
             override fun singleTapConfirmedHelper(p: GeoPoint?): Boolean {
                 p?.let {

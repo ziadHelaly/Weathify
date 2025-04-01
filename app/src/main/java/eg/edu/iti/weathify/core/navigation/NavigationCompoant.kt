@@ -1,7 +1,7 @@
 package eg.edu.iti.weathify.core.navigation
 
-import MapScreen
-import androidx.compose.foundation.layout.fillMaxSize
+import android.content.Context
+import eg.edu.iti.weathify.map.view.MapScreen
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -40,7 +40,10 @@ fun NavComponent(
     ) {
         val repo = WeatherRepositoryImpl.getInstance(
             WeatherRemoteDataSourceImpl(RetrofitHelper.serviceApi, RetrofitHelper.searchApi),
-            WeatherLocalDataSourceImpl(WeatherDataBase.getInstance(context).getFavouriteDao())
+            WeatherLocalDataSourceImpl(
+                WeatherDataBase.getInstance(context).getFavouriteDao(),
+                context.getSharedPreferences("settings", Context.MODE_PRIVATE)
+            )
         )
         composable<ScreenRoutes.HomeScreenRoute> { it ->
             val args: ScreenRoutes.HomeScreenRoute = it.toRoute()
