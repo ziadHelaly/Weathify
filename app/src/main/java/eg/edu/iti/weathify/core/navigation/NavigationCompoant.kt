@@ -23,6 +23,8 @@ import eg.edu.iti.weathify.favourite.viewModel.FavouriteViewModelFactory
 import eg.edu.iti.weathify.home.view.HomeScreen
 import eg.edu.iti.weathify.home.viewmodel.HomeViewModelFactory
 import eg.edu.iti.weathify.map.viewModel.MapViewModelFactory
+import eg.edu.iti.weathify.settings.view.SettingsScreen
+import eg.edu.iti.weathify.settings.viewModel.SettingsViewModelFactory
 
 @Composable
 fun NavComponent(
@@ -72,7 +74,8 @@ fun NavComponent(
         }
         composable<ScreenRoutes.SettingScreenRoute> {
 //            HomeScreen(long = lon, lat = lat, viewModel(factory = HomeViewModelFactory(repo)))
-            Text("set")
+//            Text("set")
+            SettingsScreen(viewModel = viewModel(factory = SettingsViewModelFactory(repo)))
         }
         composable<ScreenRoutes.MapScreenRoute> {
             MapScreen(

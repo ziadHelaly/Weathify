@@ -54,7 +54,6 @@ import eg.edu.iti.weathify.core.model.models.WeatherResponse
 import eg.edu.iti.weathify.home.viewmodel.FormatTypes
 import eg.edu.iti.weathify.home.viewmodel.HomeViewModel
 import eg.edu.iti.weathify.utils.Constants.Companion.imageLink
-import eg.edu.iti.weathify.utils.ConvertUnitsUtil.toKmH
 import eg.edu.iti.weathify.utils.Result
 
 
@@ -67,6 +66,7 @@ fun HomeScreen(
 ) {
     val context = LocalContext.current
     val currentWeather by viewModel.currentWeather.collectAsStateWithLifecycle()
+
 
     LaunchedEffect(long.value) {
         Log.d("``TAG``", "HomeScreen: ${long.value} , ${lat.value}")
@@ -91,10 +91,6 @@ fun HomeScreen(
         }
 
         is Result.Success -> {
-            Log.d(
-                "``TAG``",
-                "HomeScreen:success  ${(currentWeather as Result.Success<WeatherResponse>).data}"
-            )
             Screen(
                 country = getAddress(context, lat.value.toDouble(), long.value.toDouble()),
                 current = (currentWeather as Result.Success).data,
@@ -113,22 +109,19 @@ private fun Screen(
     country: String,
     current: WeatherResponse
 ) {
+    val tempUnit by viewModel.tempUnit.collectAsStateWithLifecycle()
+    val windUnit by viewModel.windUnit.collectAsStateWithLifecycle()
     Box(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        Log.d(
-            "``TAG``",
-            "Screen: time ${current.current.dt}  \t  ${
-                viewModel.formatTime(
-                    current.current.dt.toLong(),
-                    FormatTypes.All,current.timezone
-                )
-            }"
-        )
         Image(
             painter =
-            if (viewModel.formatTime(current.current.dt.toLong(), FormatTypes.hour24,current.timezone)
+            if (viewModel.formatTime(
+                    current.current.dt.toLong(),
+                    FormatTypes.hour24,
+                    current.timezone
+                )
                     .toInt() in 6..17
             ) {
                 painterResource(R.drawable.ic_day)
@@ -151,11 +144,17 @@ private fun Screen(
             LocationSection(country = country)
             DegreeSection(
                 current.current,
-                date = viewModel.formatTime(current.current.dt.toLong(), FormatTypes.date,current.timezone)
+                viewModel = viewModel,
+                tempUnit = tempUnit,
+                date = viewModel.formatTime(
+                    current.current.dt.toLong(),
+                    FormatTypes.date,
+                    current.timezone
+                ),
             )
-            ForeCastSection(current.current)
-            HourlySection(current.hourly, viewModel,current)
-            DailySection(viewModel, current.daily,current)
+            ForeCastSection(current.current,viewModel,windUnit)
+            HourlySection(current.hourly, viewModel, current, tempUnit = tempUnit)
+            DailySection(viewModel, current.daily, current, tempUnit = tempUnit)
         }
     }
 
@@ -163,7 +162,13 @@ private fun Screen(
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-private fun DegreeSection(current: Current, date: String, modifier: Modifier = Modifier) {
+private fun DegreeSection(
+    current: Current,
+    date: String,
+    viewModel: HomeViewModel,
+    modifier: Modifier = Modifier,
+    tempUnit: Int
+) {
     Card(
         colors = CardDefaults.cardColors(
             containerColor = Color(0x80FFFFFF)
@@ -187,8 +192,8 @@ private fun DegreeSection(current: Current, date: String, modifier: Modifier = M
                 modifier = Modifier.size(100.dp)
             )
             Row {
-                Text(current.temp.toInt().toString(), fontSize = 72.sp)
-                Text(stringResource(R.string.c), fontSize = 28.sp)
+                Text(viewModel.convertTempUnits(current.temp).toInt().toString(), fontSize = 72.sp)
+                Text(stringResource(tempUnit), fontSize = 28.sp)
             }
             Text(current.weather[0].description, fontSize = 24.sp)
         }
@@ -196,7 +201,12 @@ private fun DegreeSection(current: Current, date: String, modifier: Modifier = M
 }
 
 @Composable
-private fun ForeCastSection(current: Current, modifier: Modifier = Modifier) {
+private fun ForeCastSection(
+    current: Current,
+    viewModel: HomeViewModel,
+    windUnit: Int,
+    modifier: Modifier = Modifier
+) {
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier
@@ -205,8 +215,8 @@ private fun ForeCastSection(current: Current, modifier: Modifier = Modifier) {
         ForeCastItem(
             painterResource(R.drawable.ic_wind),
             stringResource(R.string.wind_speed),
-            toKmH(current.wind_speed).toString().substring(0, 4),
-            stringResource(R.string.km_h)
+            viewModel.convertWindSpeedUnits(current.wind_speed).toString().substring(0, 4),
+            stringResource(windUnit)
         )
 
         ForeCastItem(
@@ -253,15 +263,17 @@ private fun HourlySection(
     hours: List<Hourly>,
     viewModel: HomeViewModel,
     current: WeatherResponse,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    tempUnit: Int
 ) {
     Text(stringResource(R.string.next_24_hours), fontSize = 16.sp, fontWeight = FontWeight.Bold)
     LazyRow {
         items(hours.subList(0, 25)) { hour ->
             HourCard(
-                time = viewModel.formatTime(hour.dt.toLong(), FormatTypes.hour,current.timezone),
-                temp = hour.temp.toInt().toString(),
-                icon = hour.weather[0].icon
+                time = viewModel.formatTime(hour.dt.toLong(), FormatTypes.hour, current.timezone),
+                icon = hour.weather[0].icon,
+                temp = viewModel.convertTempUnits(hour.temp).toInt().toString(),
+                tempUnit = tempUnit
             )
         }
     }
@@ -273,7 +285,8 @@ private fun HourCard(
     modifier: Modifier = Modifier,
     time: String,
     icon: String,
-    temp: String
+    temp: String,
+    tempUnit: Int
 ) {
     Card(
         colors = CardDefaults.cardColors(
@@ -300,7 +313,7 @@ private fun HourCard(
             )
             Row {
                 Text(temp, fontSize = 12.sp)
-                Text(stringResource(R.string.c), fontSize = 12.sp)
+                Text(stringResource(tempUnit), fontSize = 12.sp)
             }
         }
     }
@@ -311,7 +324,8 @@ private fun DailySection(
     viewModel: HomeViewModel,
     days: List<Daily>,
     current: WeatherResponse,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    tempUnit: Int
 ) {
     Text(stringResource(R.string.next_7_days), fontSize = 16.sp, fontWeight = FontWeight.Bold)
 
@@ -329,13 +343,17 @@ private fun DailySection(
                     dayTitle = when (i) {
                         0 -> stringResource(R.string.today)
                         1 -> stringResource(R.string.tomorrow)
-                        else -> viewModel.formatTime(day.dt.toLong(), FormatTypes.day,current.timezone)
+                        else -> viewModel.formatTime(
+                            day.dt.toLong(),
+                            FormatTypes.day,
+                            current.timezone
+                        )
                     },
                     description = day.weather[0].description,
                     icon = day.weather[0].icon,
-                    min = day.temp.min.toInt().toString(),
-                    max = day.temp.max.toInt().toString(),
-                    unit = stringResource(R.string.c),
+                    min = viewModel.convertTempUnits(day.temp.min).toInt().toString(),
+                    max = viewModel.convertTempUnits(day.temp.max).toInt().toString(),
+                    unit = stringResource(tempUnit),
                 )
             }
         }
