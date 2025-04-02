@@ -6,8 +6,18 @@
     <string name="uv">UV</string>
     <string name="air_pressure">Air Pressure</string>
     <string name="km_h">km/h</string>
-    <string name="c">°c</string>
+    <string name="c">°C</string>
+    <string name="k">°K</string>
+    <string name="f">°F</string>
+    <string name="arabic">arabic</string>
+    <string name="english">english</string>
+    <string name="device_default">device default</string>
+    <string name="ms">m/s</string>
+    <string name="mh">mPh</string>
+    <string name="kmh">Km/h</string>
     <string name="hpa">hPa</string>
+    <string name="gps">gps</string>
+    <string name="map">map</string>
     <string name="next_24_hours">Next 24 Hours</string>
     <string name="next_7_days">Next 7 days</string>
     <string name="today">Today</string>
@@ -15,4 +25,8 @@
     <string name="add_to_fav">Add to Fav</string>
     <string name="favourites_cities">Favourites Cities</string>
     <string name="search_city">Search City</string>
+    <string name="temp_unit">Temp Unit</string>
+    <string name="language">Language</string>
+    <string name="wind_speed_unit">Wind Speed Unit</string>
+    <string name="location_provider">Location Provider</string>
 </resources>
