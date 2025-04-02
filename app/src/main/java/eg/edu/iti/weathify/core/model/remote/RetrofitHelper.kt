@@ -1,6 +1,7 @@
 package eg.edu.iti.weathify.core.model.remote
 
 import eg.edu.iti.weathify.utils.Constants.Companion.BASE_URL
+import eg.edu.iti.weathify.utils.Constants.Companion.SEARCH_URL
 import okhttp3.HttpUrl
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -13,13 +14,13 @@ object RetrofitHelper {
         .build()
 
     val weatherRetrofit: Retrofit = Retrofit.Builder()
-        .baseUrl("https://api.openweathermap.org/") // ✅ Correct base URL
+        .baseUrl(BASE_URL)
         .client(client)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
     val nominatimRetrofit: Retrofit = Retrofit.Builder()
-        .baseUrl("https://nominatim.openstreetmap.org/")
+        .baseUrl(SEARCH_URL)
         .client(client)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
