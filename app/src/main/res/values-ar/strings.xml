@@ -1,0 +1,35 @@
+<resources>
+    <string name="wind_speed">سرعة الرياح</string>
+    <string name="humidity">الرطوبة</string>
+    <string name="very_weak">ضعيف جدًا</string>
+    <string name="uv">الأشعة فوق البنفسجية</string>
+    <string name="air_pressure">الضغط الجوي</string>
+    <string name="km_h">كم/س</string>
+    <string name="c">°م</string>
+    <string name="k">°ك</string>
+    <string name="f">°ف</string>
+    <string name="arabic">العربية</string>
+    <string name="english">الإنجليزية</string>
+    <string name="device_default">إعدادات الجهاز الافتراضية</string>
+    <string name="ms">م/ث</string>
+    <string name="mh">ميل/س</string>
+    <string name="kmh">كم/س</string>
+    <string name="hpa">ب</string>
+    <string name="gps">نظام تحديد المواقع</string>
+    <string name="map">الخريطة</string>
+    <string name="next_24_hours">الـ 24 ساعة القادمة</string>
+    <string name="next_7_days">الأيام الـ 7 القادمة</string>
+    <string name="today">اليوم</string>
+    <string name="tomorrow">غدًا</string>
+    <string name="add_to_fav">إضافة إلى المفضلة</string>
+    <string name="favourites_cities">المدن المفضلة</string>
+    <string name="search_city">ابحث عن مدينة</string>
+    <string name="temp_unit">وحدة الحرارة</string>
+    <string name="language">اللغة</string>
+    <string name="wind_speed_unit">وحدة سرعة الرياح</string>
+    <string name="location_provider">مزود الموقع</string>
+    <string name="home">الرئيسية</string>
+    <string name="favourite">المفضلات</string>
+    <string name="alarm">التنبيهات</string>
+    <string name="settings">الاعدادات</string>
+</resources>

@@ -1,5 +1,5 @@
-<resources>
-    <string name="app_name">Weathify</string>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name" tools:ignore="MissingTranslation">Weathify</string>
     <string name="wind_speed">wind speed</string>
     <string name="humidity">humidity</string>
     <string name="very_weak">Very Weak</string>
@@ -29,4 +29,8 @@
     <string name="language">Language</string>
     <string name="wind_speed_unit">Wind Speed Unit</string>
     <string name="location_provider">Location Provider</string>
+    <string name="home">Home</string>
+    <string name="favourite">Favourite</string>
+    <string name="alarm">Alarm</string>
+    <string name="settings">Settings</string>
 </resources>
