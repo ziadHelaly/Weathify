@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import eg.edu.iti.weathify.R
 import eg.edu.iti.weathify.core.model.models.WeatherResponse
 import eg.edu.iti.weathify.core.model.repo.WeatherRepository
+import eg.edu.iti.weathify.utils.Constants.Companion.LANGUAGE_KEY
 import eg.edu.iti.weathify.utils.Constants.Companion.TEMP_KEY
 import eg.edu.iti.weathify.utils.Constants.Companion.WIND_KEY
 import eg.edu.iti.weathify.utils.ConvertUnitsUtil.toF
@@ -39,7 +40,13 @@ class HomeViewModel(private val repository: WeatherRepository) : ViewModel() {
 
     fun getWeather(long: String, lat: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            val result = repository.getCurrentWeather(lat, long)
+            val lang = repository.getFromSharedPref(LANGUAGE_KEY)
+            val l = when (lang?.toInt()) {
+                R.string.arabic -> "ar"
+                R.string.english -> "en"
+                else -> "en"
+            }
+            val result = repository.getCurrentWeather(lat, long, l)
             if (result is Result.Success) {
                 _currentWeather.value = Result.Success(result.data)
             }
@@ -59,13 +66,14 @@ class HomeViewModel(private val repository: WeatherRepository) : ViewModel() {
         }
     }
 
-    fun convertWindSpeedUnits(original: Double): Double {
+    fun convertWindSpeedUnits(original: Double): String {
         return when (_windUnit.value) {
-            R.string.kmh -> toKmH(original)
-            R.string.mh -> toMH(original)
-            else -> original
+            R.string.kmh -> String.format("%.2f", toKmH(original))
+            R.string.mh -> String.format("%.2f", toMH(original))
+            else -> original.toString()
         }
     }
+
     fun convertTempUnits(original: Double): Double {
         return when (_tempUnit.value) {
             R.string.k -> toK(original)

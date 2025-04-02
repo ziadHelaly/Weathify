@@ -8,7 +8,7 @@ import eg.edu.iti.weathify.utils.Result
 import kotlinx.coroutines.flow.Flow
 
 interface WeatherRepository {
-    suspend fun getCurrentWeather(lat: String, lon: String): Result<WeatherResponse>
+    suspend fun getCurrentWeather(lat: String, lon: String,lang:String): Result<WeatherResponse>
 
     suspend fun getFavourites(): Flow<List<FavouritePlace>>
     suspend fun addPlaceToFav(place: FavouritePlace): Long

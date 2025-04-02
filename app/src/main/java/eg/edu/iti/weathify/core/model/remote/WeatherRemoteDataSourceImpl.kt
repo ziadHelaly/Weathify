@@ -9,10 +9,10 @@ class WeatherRemoteDataSourceImpl(
     private val serviceApi: ServiceApi,
     private val searchApi: SearchApi
 ) : WeatherRemoteDataSource {
-    override suspend fun getAllWeatherData(lat: String, lon: String): Result<WeatherResponse> {
+    override suspend fun getAllWeatherData(lat: String, lon: String,lang:String): Result<WeatherResponse> {
 
         return try {
-            val result = serviceApi.getAllWeatherData(lat, lon, appid = BuildConfig.MY_API_KEY)
+            val result = serviceApi.getAllWeatherData(lat, lon, appid = BuildConfig.MY_API_KEY, lang =lang )
             if (result.isSuccessful) {
                 result.body()?.let {
                     Result.Success(it)

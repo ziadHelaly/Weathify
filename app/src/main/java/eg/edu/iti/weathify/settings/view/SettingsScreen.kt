@@ -1,6 +1,7 @@
 package eg.edu.iti.weathify.settings.view
 
 
+import android.app.Activity
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -33,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eg.edu.iti.weathify.R
 import eg.edu.iti.weathify.settings.viewModel.SettingsViewModel
+import eg.edu.iti.weathify.utils.updateLocale
 
 @Composable
 fun SettingsScreen(viewModel: SettingsViewModel, modifier: Modifier = Modifier) {
@@ -50,7 +52,7 @@ fun SettingsScreen(viewModel: SettingsViewModel, modifier: Modifier = Modifier) 
             .verticalScroll(rememberScrollState())
             .padding(16.dp)
     ) {
-        Text("Settings", style = MaterialTheme.typography.titleLarge)
+        Text(stringResource(R.string.settings), style = MaterialTheme.typography.titleLarge)
         SettingsSection(stringResource(R.string.language), language, viewModel.languagesOptions) {
             viewModel.updateLanguageSetting(it)
         }
@@ -60,8 +62,13 @@ fun SettingsScreen(viewModel: SettingsViewModel, modifier: Modifier = Modifier) 
         SettingsSection(stringResource(R.string.wind_speed_unit), wind, viewModel.windOptions) {
             viewModel.updateWindSetting(it)
         }
-        SettingsSection(stringResource(R.string.location_provider), location, viewModel.locationOptions) {
+        SettingsSection(
+            stringResource(R.string.location_provider),
+            location,
+            viewModel.locationOptions
+        ) {
             viewModel.updateLocationSetting(it)
+            updateLocale(context as Activity, if (it == R.string.arabic) "ar" else "en")
         }
     }
 }

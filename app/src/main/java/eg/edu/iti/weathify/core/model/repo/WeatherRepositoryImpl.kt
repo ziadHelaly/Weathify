@@ -32,9 +32,9 @@ class WeatherRepositoryImpl private constructor(
         }
     }
 
-    override suspend fun getCurrentWeather(lat: String, lon: String): Result<WeatherResponse> {
+    override suspend fun getCurrentWeather(lat: String, lon: String,lang:String): Result<WeatherResponse> {
         Log.d("`TAG`", "getCurrentWeather: call fired")
-        return remoteDataSource.getAllWeatherData(lat, lon)
+        return remoteDataSource.getAllWeatherData(lat, lon,lang)
     }
 
     override suspend fun getFavourites(): Flow<List<FavouritePlace>> {

@@ -10,6 +10,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import eg.edu.iti.weathify.core.navigation.navigationItems
 
@@ -35,7 +36,7 @@ fun NavigationBottomBar(navController: NavController, modifier: Modifier = Modif
                 },
                 alwaysShowLabel = false,
                 label = {
-                    Text(navigationItem.title)
+                    Text(stringResource( navigationItem.title))
                 }
             )
         }

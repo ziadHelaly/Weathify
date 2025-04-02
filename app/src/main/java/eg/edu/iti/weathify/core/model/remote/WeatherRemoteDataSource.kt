@@ -6,6 +6,6 @@ import eg.edu.iti.weathify.utils.Result
 
 
 interface WeatherRemoteDataSource {
-    suspend fun getAllWeatherData(lat: String, lon: String): Result<WeatherResponse>
     suspend fun searchCity(city: String): List<SearchResponse>
+    suspend fun getAllWeatherData(lat: String, lon: String, lang: String): Result<WeatherResponse>
 }

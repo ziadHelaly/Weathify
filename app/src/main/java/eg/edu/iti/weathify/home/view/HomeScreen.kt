@@ -215,7 +215,7 @@ private fun ForeCastSection(
         ForeCastItem(
             painterResource(R.drawable.ic_wind),
             stringResource(R.string.wind_speed),
-            viewModel.convertWindSpeedUnits(current.wind_speed).toString().substring(0, 4),
+            viewModel.convertWindSpeedUnits(current.wind_speed),
             stringResource(windUnit)
         )
 
