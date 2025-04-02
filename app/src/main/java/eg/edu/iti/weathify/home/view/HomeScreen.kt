@@ -233,8 +233,8 @@ private fun ForeCastSection(
     ) {
         ForeCastItem(
             painterResource(R.drawable.ic_cloud),
-            stringResource(R.string.uv),
-            if (current.uvi > 0) current.uvi.toString() else stringResource(R.string.very_weak),
+            stringResource(R.string.clouds),
+            current.clouds.toString() ,
             ""
         )
 
@@ -418,7 +418,6 @@ private fun ForeCastItem(
     type: String,
     value: String,
     unit: String,
-    modifier: Modifier = Modifier
 ) {
     Row {
         Icon(

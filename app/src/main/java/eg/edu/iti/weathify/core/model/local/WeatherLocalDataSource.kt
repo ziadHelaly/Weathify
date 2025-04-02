@@ -8,6 +8,6 @@ interface WeatherLocalDataSource {
     suspend fun getAllFavourites(): Flow<List<FavouritePlace>>
     suspend fun addPlaceToFav(place: FavouritePlace): Long
     suspend fun removeFromFav(place: FavouritePlace): Int
-    fun saveInSharedPref(key: String, value: String)
-    fun getFromSharedPref(key: String): String?
+    fun getFromSharedPref(key: String): Int
+    fun saveInSharedPref(key: String, value: Int)
 }

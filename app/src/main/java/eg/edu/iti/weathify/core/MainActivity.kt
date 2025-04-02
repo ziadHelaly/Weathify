@@ -1,6 +1,7 @@
 package eg.edu.iti.weathify.core
 
 import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -23,11 +24,13 @@ import androidx.navigation.compose.rememberNavController
 import eg.edu.iti.weathify.core.navigation.NavComponent
 import eg.edu.iti.weathify.core.view.components.NavigationBottomBar
 import eg.edu.iti.weathify.core.navigation.ScreenRoutes
+import eg.edu.iti.weathify.core.view.requestPermissions
 import eg.edu.iti.weathify.core.view.showDialogForAskAgain
 import eg.edu.iti.weathify.core.view.showDialogForGPS
 import eg.edu.iti.weathify.core.view.showDialogGoToSettings
 import eg.edu.iti.weathify.ui.theme.WeathifyTheme
 import eg.edu.iti.weathify.utils.Constants.Companion.permissionRequestCode
+import eg.edu.iti.weathify.utils.LocaleHelper
 import eg.edu.iti.weathify.utils.LocationUtil.getLocation
 import eg.edu.iti.weathify.utils.LocationUtil.isGPSOpened
 import eg.edu.iti.weathify.utils.PermissionsUtil.checkPermissions
@@ -62,7 +65,6 @@ class MainActivity : ComponentActivity() {
                 ) { innerPadding ->
                     longitude = rememberSaveable { mutableStateOf("0.0") }
                     latitude = rememberSaveable { mutableStateOf("0.0") }
-                    Log.d("``TAG``", "onCreate: dfghjkl;")
                     NavComponent(
                         navHostController = navController,
                         startDestination = ScreenRoutes.HomeScreenRoute(null,null),
@@ -93,9 +95,13 @@ class MainActivity : ComponentActivity() {
 
         } else {
             Log.d("`TAG`", "onStart: false")
-            eg.edu.iti.weathify.core.view.requestPermissions(this@MainActivity)
+            requestPermissions(this@MainActivity)
 
         }
+    }
+    override fun attachBaseContext(newBase: Context) {
+        val savedLanguage = LocaleHelper.getSavedLanguage(newBase)
+        super.attachBaseContext(LocaleHelper.wrapContext(newBase, savedLanguage))
     }
 
 

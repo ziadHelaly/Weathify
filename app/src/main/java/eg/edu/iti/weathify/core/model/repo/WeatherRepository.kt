@@ -16,6 +16,6 @@ interface WeatherRepository {
 
     fun getCities(query: String): Flow<List<SearchResponse>>
 
-    fun getFromSharedPref(key: String): String?
-    fun saveInSharedPref(key: String, value: String)
+    fun getFromSharedPref(key: String): Int
+    fun saveInSharedPref(key: String, value: Int)
 }

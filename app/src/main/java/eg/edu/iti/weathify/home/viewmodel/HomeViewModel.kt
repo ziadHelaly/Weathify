@@ -41,7 +41,7 @@ class HomeViewModel(private val repository: WeatherRepository) : ViewModel() {
     fun getWeather(long: String, lat: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val lang = repository.getFromSharedPref(LANGUAGE_KEY)
-            val l = when (lang?.toInt()) {
+            val l = when (lang) {
                 R.string.arabic -> "ar"
                 R.string.english -> "en"
                 else -> "en"
@@ -54,22 +54,22 @@ class HomeViewModel(private val repository: WeatherRepository) : ViewModel() {
     }
 
     private fun loadSettings() {
-        repository.getFromSharedPref(TEMP_KEY)?.let {
-            if (it != "N/A") {
-                _tempUnit.value = it.toInt()
+        repository.getFromSharedPref(TEMP_KEY).let {
+            if (it != 2002) {
+                _tempUnit.value = it
             }
         }
-        repository.getFromSharedPref(WIND_KEY)?.let {
-            if (it != "N/A") {
-                _windUnit.value = it.toInt()
+        repository.getFromSharedPref(WIND_KEY).let {
+            if (it != 2002) {
+                _windUnit.value = it
             }
         }
     }
 
     fun convertWindSpeedUnits(original: Double): String {
         return when (_windUnit.value) {
-            R.string.kmh -> String.format("%.2f", toKmH(original))
-            R.string.mh -> String.format("%.2f", toMH(original))
+            R.string.kmh -> String.format(locale = Locale.getDefault(), "%.2f", toKmH(original))
+            R.string.mh -> String.format(locale = Locale.getDefault(), "%.2f", toMH(original))
             else -> original.toString()
         }
     }

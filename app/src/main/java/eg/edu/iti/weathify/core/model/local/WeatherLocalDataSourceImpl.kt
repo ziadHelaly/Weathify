@@ -21,12 +21,12 @@ class WeatherLocalDataSourceImpl(
         return favouritesDao.removeFromFavourite(place)
     }
 
-    override fun saveInSharedPref(key: String, value: String) {
-        sharedPreferences.edit().putString(key, value).apply()
+    override fun saveInSharedPref(key: String, value: Int) {
+        sharedPreferences.edit().putInt(key, value).apply()
     }
 
-    override fun getFromSharedPref(key: String): String? {
-        return sharedPreferences.getString(key,"N/A")
+    override fun getFromSharedPref(key: String): Int {
+        return sharedPreferences.getInt(key,2002)
     }
 
 

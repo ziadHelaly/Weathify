@@ -2,7 +2,6 @@ package eg.edu.iti.weathify.settings.view
 
 
 import android.app.Activity
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,21 +19,19 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import eg.edu.iti.weathify.R
 import eg.edu.iti.weathify.settings.viewModel.SettingsViewModel
-import eg.edu.iti.weathify.utils.updateLocale
+import eg.edu.iti.weathify.utils.LocaleHelper.Companion.saveLanguagePreference
 
 @Composable
 fun SettingsScreen(viewModel: SettingsViewModel, modifier: Modifier = Modifier) {
@@ -55,6 +52,11 @@ fun SettingsScreen(viewModel: SettingsViewModel, modifier: Modifier = Modifier) 
         Text(stringResource(R.string.settings), style = MaterialTheme.typography.titleLarge)
         SettingsSection(stringResource(R.string.language), language, viewModel.languagesOptions) {
             viewModel.updateLanguageSetting(it)
+            saveLanguagePreference(
+                context,
+                if (it == R.string.arabic) "ar" else if (it == R.string.english) "en" else "en"
+            )
+            (context as Activity).recreate()
         }
         SettingsSection(stringResource(R.string.temp_unit), temp, viewModel.tempOptions) {
             viewModel.updateTempSetting(it)
@@ -68,7 +70,6 @@ fun SettingsScreen(viewModel: SettingsViewModel, modifier: Modifier = Modifier) 
             viewModel.locationOptions
         ) {
             viewModel.updateLocationSetting(it)
-            updateLocale(context as Activity, if (it == R.string.arabic) "ar" else "en")
         }
     }
 }

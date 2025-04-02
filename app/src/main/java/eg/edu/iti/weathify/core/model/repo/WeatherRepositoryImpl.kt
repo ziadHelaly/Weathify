@@ -59,11 +59,11 @@ class WeatherRepositoryImpl private constructor(
         }
     }
 
-    override fun getFromSharedPref(key: String): String? {
+    override fun getFromSharedPref(key: String): Int {
         return localDataSource.getFromSharedPref(key)
     }
 
-    override fun saveInSharedPref(key: String, value: String) {
+    override fun saveInSharedPref(key: String, value: Int) {
         localDataSource.saveInSharedPref(key, value)
     }
 }

@@ -49,43 +49,43 @@ class SettingsViewModel(private val repository: WeatherRepository) : ViewModel()
     }
 
     private fun loadCurrentSettings() {
-        repository.getFromSharedPref(TEMP_KEY)?.let {
-            if (it != "N/A") {
-                _currentTempUnit.value = it.toInt()
+        repository.getFromSharedPref(TEMP_KEY).let {
+            if (it != 2002) {
+                _currentTempUnit.value = it
             }
         }
-        repository.getFromSharedPref(LOCATION_KEY)?.let {
-            if (it != "N/A") {
-                _currentLocationSource.value = it.toInt()
+        repository.getFromSharedPref(LOCATION_KEY).let {
+            if (it != 2002) {
+                _currentLocationSource.value = it
             }
         }
-        repository.getFromSharedPref(LANGUAGE_KEY)?.let {
-            if (it != "N/A") {
-                _currentLanguage.value = it.toInt()
+        repository.getFromSharedPref(LANGUAGE_KEY).let {
+            if (it != 2002) {
+                _currentLanguage.value = it
             }
         }
-        repository.getFromSharedPref(WIND_KEY)?.let {
-            if (it != "N/A") {
-                _currentWindUnit.value = it.toInt()
+        repository.getFromSharedPref(WIND_KEY).let {
+            if (it != 2002) {
+                _currentWindUnit.value = it
             }
         }
     }
 
     fun updateTempSetting(value: Int) {
         _currentTempUnit.value = value
-        repository.saveInSharedPref(TEMP_KEY,value.toString())
+        repository.saveInSharedPref(TEMP_KEY,value)
     }
     fun updateWindSetting(value: Int) {
         _currentWindUnit.value = value
-        repository.saveInSharedPref(WIND_KEY,value.toString())
+        repository.saveInSharedPref(WIND_KEY,value)
     }
     fun updateLocationSetting(value: Int) {
         _currentLocationSource.value = value
-        repository.saveInSharedPref(LOCATION_KEY,value.toString())
+        repository.saveInSharedPref(LOCATION_KEY,value)
     }
     fun updateLanguageSetting(value: Int) {
         _currentLanguage.value = value
-        repository.saveInSharedPref(LANGUAGE_KEY,value.toString())
+        repository.saveInSharedPref(LANGUAGE_KEY,value)
     }
 
 

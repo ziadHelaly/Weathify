@@ -24,12 +24,22 @@ object LocationUtil {
     fun getLocation(activity: Activity, onLocationCallback: (String, String) -> Unit) {
         val fusedClient = LocationServices.getFusedLocationProviderClient(activity)
 
-        fusedClient.getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, null)
-            .addOnSuccessListener { location ->
-                location?.let {
-                    Log.d("`TAG`", "getLocation: ${it.longitude.toString() + it.latitude.toString()}")
-                    onLocationCallback(it.longitude.toString(), it.latitude.toString())
-                }
+        fusedClient.lastLocation.addOnSuccessListener { location ->
+            Log.d("`TAG`", "getLocation: before")
+            if (location != null) {
+                Log.d("``TAG", "getLastLocation: ${location.longitude}, ${location.latitude}")
+                onLocationCallback(location.longitude.toString(), location.latitude.toString())
+            } else {
+                fusedClient.getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, null)
+                    .addOnSuccessListener { currentLocation ->
+                        currentLocation?.let {
+                            Log.d("``TAG", "getCurrentLocation (fallback): ${it.longitude}, ${it.latitude}")
+                            onLocationCallback(it.longitude.toString(), it.latitude.toString())
+                        }
+                    }
             }
+            Log.d("``TAG``", "getLocation: After")
+        }
     }
+
 }

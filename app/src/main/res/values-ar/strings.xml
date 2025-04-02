@@ -32,4 +32,6 @@
     <string name="favourite">المفضلات</string>
     <string name="alarm">التنبيهات</string>
     <string name="settings">الاعدادات</string>
+    <string name="clouds">السحب</string>
+
 </resources>
