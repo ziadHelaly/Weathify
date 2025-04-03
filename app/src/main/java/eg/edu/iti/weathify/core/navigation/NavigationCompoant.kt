@@ -13,6 +13,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import eg.edu.iti.weathify.alarm.view.AlarmScreen
+import eg.edu.iti.weathify.alarm.viewModel.AlarmViewModelFactory
 import eg.edu.iti.weathify.core.model.local.WeatherDataBase
 import eg.edu.iti.weathify.core.model.local.WeatherLocalDataSourceImpl
 import eg.edu.iti.weathify.core.model.remote.RetrofitHelper
@@ -70,11 +72,11 @@ fun NavComponent(
         }
         composable<ScreenRoutes.AlarmScreenRoute> {
 //            HomeScreen(long = lon, lat = lat, viewModel(factory = HomeViewModelFactory(repo)))
-            Text("alr")
+
+            AlarmScreen(viewModel = viewModel(factory = AlarmViewModelFactory(repo)))
         }
         composable<ScreenRoutes.SettingScreenRoute> {
-//            HomeScreen(long = lon, lat = lat, viewModel(factory = HomeViewModelFactory(repo)))
-//            Text("set")
+
             SettingsScreen(viewModel = viewModel(factory = SettingsViewModelFactory(repo)))
         }
         composable<ScreenRoutes.MapScreenRoute> {

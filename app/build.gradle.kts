@@ -112,5 +112,9 @@ dependencies {
     //OSM maps
     implementation("org.osmdroid:osmdroid-android:6.1.16")
 
+    //Work Manager
+    implementation ("androidx.work:work-runtime-ktx:2.10.0")
+
+
 
 }
