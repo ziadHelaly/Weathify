@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
 
     <application
         android:allowBackup="true"
@@ -18,6 +19,16 @@
         android:theme="@style/SplashTheme"
         tools:targetApi="31">
         <activity
+            android:name=".alert.AlertActivity"
+            android:exported="true"
+            android:label="@string/title_activity_alert"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true"
+            android:launchMode="singleTop"
+            android:taskAffinity=""
+            android:excludeFromRecents="true"
+            android:theme="@style/Theme.Weathify" />
+        <activity
             android:name=".core.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
@@ -29,6 +40,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <receiver android:name=".alert.AlertReceiver"
+            android:exported="true">
+        </receiver>
     </application>
 
 </manifest>

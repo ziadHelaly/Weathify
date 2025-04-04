@@ -55,6 +55,7 @@ import eg.edu.iti.weathify.home.viewmodel.FormatTypes
 import eg.edu.iti.weathify.home.viewmodel.HomeViewModel
 import eg.edu.iti.weathify.utils.Constants.Companion.imageLink
 import eg.edu.iti.weathify.utils.Result
+import java.util.Locale
 
 
 @Composable
@@ -66,12 +67,13 @@ fun HomeScreen(
 ) {
     val context = LocalContext.current
     val currentWeather by viewModel.currentWeather.collectAsStateWithLifecycle()
-
+    val address by viewModel.address.collectAsStateWithLifecycle()
 
     LaunchedEffect(long.value) {
         Log.d("``TAG``", "HomeScreen: ${long.value} , ${lat.value}")
         if (long.value != "0.0") {
             viewModel.getWeather(long.value, lat.value)
+            viewModel.getAddress(Geocoder(context, Locale.getDefault()), lat.value.toDouble(), long.value.toDouble())
         }
     }
 
@@ -92,7 +94,7 @@ fun HomeScreen(
 
         is Result.Success -> {
             Screen(
-                country = getAddress(context, lat.value.toDouble(), long.value.toDouble()),
+                country = address,
                 current = (currentWeather as Result.Success).data,
                 viewModel = viewModel
             )
@@ -152,7 +154,7 @@ private fun Screen(
                     current.timezone
                 ),
             )
-            ForeCastSection(current.current,viewModel,windUnit)
+            ForeCastSection(current.current, viewModel, windUnit)
             HourlySection(current.hourly, viewModel, current, tempUnit = tempUnit)
             DailySection(viewModel, current.daily, current, tempUnit = tempUnit)
         }
@@ -234,7 +236,7 @@ private fun ForeCastSection(
         ForeCastItem(
             painterResource(R.drawable.ic_cloud),
             stringResource(R.string.clouds),
-            current.clouds.toString() ,
+            current.clouds.toString(),
             ""
         )
 
@@ -431,11 +433,3 @@ private fun ForeCastItem(
     }
 }
 
-
-private fun getAddress(context: Context, lati: Double, long: Double): String {
-    val res = Geocoder(context).getFromLocation(lati, long, 1)
-    if (!res.isNullOrEmpty()) {
-        return "${res[0].subAdminArea}, ${res[0].adminArea} "
-    }
-    return "Egypt"
-}

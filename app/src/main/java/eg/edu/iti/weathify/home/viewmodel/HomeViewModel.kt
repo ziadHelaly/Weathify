@@ -1,5 +1,6 @@
 package eg.edu.iti.weathify.home.viewmodel
 
+import android.location.Geocoder
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import eg.edu.iti.weathify.R
@@ -17,6 +18,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -34,6 +36,9 @@ class HomeViewModel(private val repository: WeatherRepository) : ViewModel() {
     private val _windUnit = MutableStateFlow(R.string.kmh)
     val windUnit: StateFlow<Int> = _windUnit
 
+    private val _address = MutableStateFlow("")
+    val address: StateFlow<String> = _address
+
     init {
         loadSettings()
     }
@@ -49,6 +54,8 @@ class HomeViewModel(private val repository: WeatherRepository) : ViewModel() {
             val result = repository.getCurrentWeather(lat, long, l)
             if (result is Result.Success) {
                 _currentWeather.value = Result.Success(result.data)
+            } else {
+                _currentWeather.value = Result.Failure((result as Result.Failure).message)
             }
         }
     }
@@ -97,4 +104,20 @@ class HomeViewModel(private val repository: WeatherRepository) : ViewModel() {
 
         return formatter.format(dt)
     }
+
+    fun getAddress(geoCoder: Geocoder, lati: Double, long: Double) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val res = geoCoder.getFromLocation(lati, long, 1)
+                if (!res.isNullOrEmpty()) {
+                    _address.value = "${res[0].subAdminArea}, ${res[0].adminArea}"
+                } else {
+                    _address.value = "Egypt"
+                }
+            } catch (e: IOException) {
+                _address.value = "Unknown location"
+            }
+        }
+    }
+
 }

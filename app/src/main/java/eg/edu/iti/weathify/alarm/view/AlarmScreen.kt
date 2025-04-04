@@ -39,6 +39,7 @@ import eg.edu.iti.weathify.core.view.components.FAB
 import eg.edu.iti.weathify.utils.Constants
 import eg.edu.iti.weathify.utils.WorkMangerHelper.addWorker
 import eg.edu.iti.weathify.utils.WorkMangerHelper.cancelWorker
+import eg.edu.iti.weathify.worker.AlertWorker
 import eg.edu.iti.weathify.worker.NotificationWorker
 import java.time.ZoneId
 import java.util.concurrent.TimeUnit
@@ -116,7 +117,7 @@ fun AlarmScreen(viewModel: AlarmViewModel, currentLongitude: String, currentLati
                                     .setInputData(data)
                                     .build()
                             } else{
-                                OneTimeWorkRequestBuilder<NotificationWorker>()
+                                OneTimeWorkRequestBuilder<AlertWorker>()
                                     .setInitialDelay(minutes!!, TimeUnit.MINUTES)
                                     .setConstraints(
                                         Constraints.Builder()

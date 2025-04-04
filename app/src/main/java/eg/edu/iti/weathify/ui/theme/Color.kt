@@ -1,4 +1,6 @@
 package eg.edu.iti.weathify.ui.theme
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
 val primaryLight = Color(0xFF415F91)
@@ -217,7 +219,14 @@ val surfaceContainerDarkHighContrast = Color(0xFF2E3036)
 val surfaceContainerHighDarkHighContrast = Color(0xFF393B41)
 val surfaceContainerHighestDarkHighContrast = Color(0xFF45474C)
 
-
+val screenBG = Brush.linearGradient(
+    colors = listOf(
+        Color(0xFF020024),
+        Color(0xFF090979)
+    ),
+    start = Offset(0f, 0f),
+    end = Offset(0f, Float.POSITIVE_INFINITY)
+)
 
 
 
