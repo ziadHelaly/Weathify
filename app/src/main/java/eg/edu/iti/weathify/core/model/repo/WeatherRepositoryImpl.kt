@@ -3,6 +3,7 @@ package eg.edu.iti.weathify.core.model.repo
 
 import android.util.Log
 import eg.edu.iti.weathify.core.model.local.WeatherLocalDataSource
+import eg.edu.iti.weathify.core.model.models.Alarm
 import eg.edu.iti.weathify.core.model.models.FavouritePlace
 import eg.edu.iti.weathify.core.model.models.SearchResponse
 import eg.edu.iti.weathify.core.model.models.WeatherResponse
@@ -66,4 +67,20 @@ class WeatherRepositoryImpl private constructor(
     override fun saveInSharedPref(key: String, value: Int) {
         localDataSource.saveInSharedPref(key, value)
     }
+    override suspend fun getAlarms(): Flow<List<Alarm>> {
+        return localDataSource.getAlarms()
+    }
+
+    override suspend fun addAlarm(alarm: Alarm): Long {
+        return localDataSource.addAlarm(alarm)
+    }
+
+    override suspend fun deleteAlarm(alarm: Alarm): Int {
+        return localDataSource.deleteAlarm(alarm)
+    }
+
+    override suspend fun deleteAlarmById(id: String) {
+        return localDataSource.deleteAlarmById(id)
+    }
+
 }

@@ -1,6 +1,6 @@
 package eg.edu.iti.weathify.core.model.repo
 
-import android.location.Location
+import eg.edu.iti.weathify.core.model.models.Alarm
 import eg.edu.iti.weathify.core.model.models.FavouritePlace
 import eg.edu.iti.weathify.core.model.models.SearchResponse
 import eg.edu.iti.weathify.core.model.models.WeatherResponse
@@ -18,4 +18,8 @@ interface WeatherRepository {
 
     fun getFromSharedPref(key: String): Int
     fun saveInSharedPref(key: String, value: Int)
+    suspend fun getAlarms(): Flow<List<Alarm>>
+    suspend fun addAlarm(alarm: Alarm): Long
+    suspend fun deleteAlarm(alarm: Alarm): Int
+    suspend fun deleteAlarmById(id: String)
 }
