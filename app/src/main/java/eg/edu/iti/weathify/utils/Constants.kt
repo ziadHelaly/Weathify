@@ -10,6 +10,8 @@ class Constants {
         const val WIND_KEY = "WIND_KEY"
         const val LOCATION_KEY = "LOCATION_KEY"
         const val LANGUAGE_KEY = "LANGUAGE_KEY"
+        const val LATITUDE_KEY = "LATITUDE_KEY"
+        const val LONGITUDE_KEY = "LONGITUDE_KEY"
 
     }
 }

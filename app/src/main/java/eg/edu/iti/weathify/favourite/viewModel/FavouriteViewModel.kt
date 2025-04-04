@@ -18,7 +18,7 @@ class FavouriteViewModel(private val repository: WeatherRepository) : ViewModel(
         getFavourites()
     }
 
-    fun getFavourites() {
+    private fun getFavourites() {
         viewModelScope.launch(Dispatchers.IO) {
             repository.getFavourites().collect {
                 _allFavourite.value = it

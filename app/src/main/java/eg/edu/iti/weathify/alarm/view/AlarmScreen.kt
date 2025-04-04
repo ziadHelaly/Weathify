@@ -8,8 +8,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -24,22 +25,33 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.work.Constraints
+import androidx.work.Data
+import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
 import eg.edu.iti.weathify.R
 import eg.edu.iti.weathify.alarm.viewModel.AlarmViewModel
+import eg.edu.iti.weathify.core.model.models.Alarm
 import eg.edu.iti.weathify.core.view.components.FAB
+import eg.edu.iti.weathify.utils.Constants
+import eg.edu.iti.weathify.utils.WorkMangerHelper.addWorker
+import eg.edu.iti.weathify.utils.WorkMangerHelper.cancelWorker
 import eg.edu.iti.weathify.worker.NotificationWorker
+import java.time.ZoneId
 import java.util.concurrent.TimeUnit
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun AlarmScreen(viewModel: AlarmViewModel) {
+fun AlarmScreen(viewModel: AlarmViewModel, currentLongitude: String, currentLatitude: String) {
     var showDialog by remember { mutableStateOf(false) }
-    var result by remember { mutableStateOf("") }
     val minutes by viewModel.timeDifferenceMinutes.collectAsStateWithLifecycle()
+    val currentCity by viewModel.currentCity.collectAsStateWithLifecycle()
+    val selectedCity by viewModel.selectedCity.collectAsStateWithLifecycle()
+    val alarms by viewModel.alarms.collectAsStateWithLifecycle()
+    val type by viewModel.alarmType.collectAsStateWithLifecycle()
     val context = LocalContext.current
     Scaffold(
         floatingActionButton = {
@@ -53,42 +65,95 @@ fun AlarmScreen(viewModel: AlarmViewModel) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(paddingValues)
+                .padding(16.dp)
         ) {
+            Text(stringResource(R.string.alarms), style = MaterialTheme.typography.titleLarge)
+            if (alarms.isNotEmpty()) {
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    items(alarms) { alarm ->
+                        AlarmItem(
+                            time = viewModel.formatTime(alarm.date),
+                            city = alarm.city
+                        ) {
+                            viewModel.deleteAlarm(alarm)
+                            cancelWorker(context, alarm.id)
+
+                        }
+                    }
+                }
+
+            }else{
+                Text(stringResource(R.string.no_active_alarms), style = MaterialTheme.typography.bodyLarge)
+            }
             if (showDialog) {
                 AlarmDialog(
                     viewModel = viewModel,
                     onDismiss = { showDialog = false },
                     onConfirm = { selectedData ->
-                        result = selectedData
                         showDialog = false
-                        if (minutes != null){
-                            val workManger = WorkManager.getInstance(context)
-                            val alarm= OneTimeWorkRequestBuilder<NotificationWorker>()
-                                .setInitialDelay(minutes!!,TimeUnit.MINUTES)
-                                .build()
-                            workManger.enqueue(alarm)
+                        if (minutes != null) {
+                            val data = if (currentCity == "current location") {
+                                Data.Builder()
+                                    .putString(Constants.LONGITUDE_KEY, currentLongitude)
+                                    .putString(Constants.LATITUDE_KEY, currentLatitude).build()
+                            } else {
+                                Data.Builder()
+                                    .putString(Constants.LONGITUDE_KEY, selectedCity.longitude)
+                                    .putString(Constants.LATITUDE_KEY, selectedCity.latitude)
+                                    .build()
+                            }
+                            val alarm = if (type == R.string.notification) {
+                                OneTimeWorkRequestBuilder<NotificationWorker>()
+                                    .setInitialDelay(minutes!!, TimeUnit.MINUTES)
+                                    .setConstraints(
+                                        Constraints.Builder()
+                                            .setRequiredNetworkType(NetworkType.CONNECTED).build()
+                                    )
+                                    .setInputData(data)
+                                    .build()
+                            } else{
+                                OneTimeWorkRequestBuilder<NotificationWorker>()
+                                    .setInitialDelay(minutes!!, TimeUnit.MINUTES)
+                                    .setConstraints(
+                                        Constraints.Builder()
+                                            .setRequiredNetworkType(NetworkType.CONNECTED).build()
+                                    )
+                                    .setInputData(data)
+                                    .build()
+                            }
+                            addWorker(worker = alarm, context = context)
+
+                            viewModel.saveAlarm(
+                                Alarm(
+                                    alarm.id.toString(),
+                                    selectedData.atZone(ZoneId.systemDefault()).toInstant()
+                                        .toEpochMilli(),
+                                    currentCity
+                                )
+                            )
                         }
                     }
                 )
             }
+
         }
     }
 }
 
 
 @Composable
-private fun FavouriteItem(
-    modifier: Modifier = Modifier,
-    name: String,
-    onDisplayClick: () -> Unit,
+private fun AlarmItem(
+    time: String,
+    city: String,
     onClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(75.dp)
             .padding(vertical = 8.dp)
     ) {
         Row(
@@ -96,15 +161,24 @@ private fun FavouriteItem(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxSize()
-                .clickable { onDisplayClick() }
         ) {
-            Text(
-                text = name,
-                style = MaterialTheme.typography.bodyLarge,
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier
                     .padding(8.dp)
                     .weight(0.8f)
-            )
+            ) {
+                Text(
+                    text = time,
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+                Text(
+                    text = city,
+                    style = MaterialTheme.typography.bodyMedium
+
+                )
+
+            }
             Icon(
                 painter = painterResource(R.drawable.ic_delete),
                 "",

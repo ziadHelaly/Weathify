@@ -4,14 +4,22 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,6 +28,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -27,6 +36,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import eg.edu.iti.weathify.R
 import eg.edu.iti.weathify.alarm.viewModel.AlarmViewModel
+import eg.edu.iti.weathify.core.model.models.FavouritePlace
+import eg.edu.iti.weathify.settings.view.SettingsSection
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Locale
@@ -36,7 +48,7 @@ import java.util.Locale
 fun AlarmDialog(
     viewModel: AlarmViewModel,
     onDismiss: () -> Unit,
-    onConfirm: (String) -> Unit
+    onConfirm: (LocalDateTime) -> Unit
 ) {
 
     val context = LocalContext.current
@@ -45,6 +57,9 @@ fun AlarmDialog(
     val inputData by viewModel.inputData.collectAsState()
     val timeDifference by viewModel.timeDifferenceMinutes.collectAsState()
     val isTimeValid by viewModel.isTimeValid.collectAsState()
+    val currentCity by viewModel.currentCity.collectAsState()
+    val alarmType by viewModel.alarmType.collectAsState()
+    val cities by viewModel.cities.collectAsState()
 
     var showDatePicker by remember { mutableStateOf(false) }
     var showTimePicker by remember { mutableStateOf(false) }
@@ -86,7 +101,16 @@ fun AlarmDialog(
             Column(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-
+                SettingsSection(
+                    stringResource(R.string.alarm_type),
+                    alarmType,
+                    viewModel.alarmTypeOptions
+                ) {
+                    viewModel.updateAlarmType(it)
+                }
+                CitiesSection(stringResource(R.string.city), currentCity, cities) {
+                    viewModel.updateCurrentCity(it)
+                }
                 Button(onClick = { showDatePicker = true }) {
                     Text(
                         text = selectedDateTime?.format(
@@ -120,12 +144,19 @@ fun AlarmDialog(
                         color = if (isTimeValid) Color.Green else Color.Red
                     )
                 }
+                if (selectedDateTime == null) {
+                    Text(
+                        text = stringResource(R.string.please_enter_date_and_time)
+                    )
+                }
             }
         },
         confirmButton = {
             Button(
                 onClick = {
-                    onConfirm(viewModel.getResult())
+                    if (selectedDateTime != null) {
+                        onConfirm(selectedDateTime!!)
+                    }
                 },
                 enabled = isTimeValid
             ) {
@@ -138,4 +169,48 @@ fun AlarmDialog(
             }
         }
     )
+}
+
+@Composable
+private fun CitiesSection(
+    label: String,
+    defaultValue: String,
+    optionsList: List<FavouritePlace>,
+    onClick: (FavouritePlace) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        Text(label, style = MaterialTheme.typography.labelLarge, modifier = Modifier.weight(0.25f))
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.weight(0.75f)
+        ) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(30.dp)
+                    .clickable { expanded = !expanded }
+                    .background(MaterialTheme.colorScheme.secondaryContainer)
+
+            ) {
+                Text(defaultValue, style = MaterialTheme.typography.labelMedium)
+            }
+
+            DropdownMenu(expanded, { expanded = false }) {
+                optionsList.forEach { option ->
+                    DropdownMenuItem(text = { Text(option.name) }, onClick = {
+                        onClick(option)
+                        expanded = !expanded
+                    })
+                }
+            }
+        }
+    }
 }

@@ -33,5 +33,18 @@
     <string name="alarm">التنبيهات</string>
     <string name="settings">الاعدادات</string>
     <string name="clouds">السحب</string>
-
+    <string name="enter_details">ادخل التفاصيل</string>
+    <string name="select_date">اختر التاريخ</string>
+    <string name="select_time">اختر الوقت</string>
+    <string name="ok">حسنا</string>
+    <string name="selected_time_is_in_the_past">الوقت المختار في الماضي</string>
+    <string name="cancel">الغاء</string>
+    <string name="notification">اشعار</string>
+    <string name="current_location">المكان الحالي</string>
+    <string name="alarm_type">نوع التنبيه</string>
+    <string name="city">المدينة</string>
+    <string name="please_enter_date_and_time">من فضلك ادخل الوقت و التاريخ</string>
+    <string name="alarms">التنبيهات</string>
+    <string name="no_active_alarms">لا تنبيهات مفعلة</string>
+    <string name="no_favourites_city_added">لا يوجد مدن مفضلة</string>
 </resources>

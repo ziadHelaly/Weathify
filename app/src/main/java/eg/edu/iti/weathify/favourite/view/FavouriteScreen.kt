@@ -61,6 +61,9 @@ fun FavouriteScreen(viewModel: FavouriteViewModel,navToHome:(String,String)->Uni
                     }
                 }
             }
+            if (favs.isEmpty()){
+                Text(stringResource(R.string.no_favourites_city_added), style = MaterialTheme.typography.bodyLarge)
+            }
         }
     }
 }
@@ -88,12 +91,17 @@ private fun FavouriteItem(
             Text(
                 text = name,
                 style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.padding(8.dp).weight(0.8f)
+                modifier = Modifier
+                    .padding(8.dp)
+                    .weight(0.8f)
             )
             Icon(
                 painter = painterResource(R.drawable.ic_delete),
                 "",
-                modifier = Modifier.clickable { onClick() }.padding(8.dp).weight(0.2f))
+                modifier = Modifier
+                    .clickable { onClick() }
+                    .padding(8.dp)
+                    .weight(0.2f))
         }
 
     }

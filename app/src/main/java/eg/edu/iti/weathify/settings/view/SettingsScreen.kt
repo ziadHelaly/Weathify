@@ -75,7 +75,7 @@ fun SettingsScreen(viewModel: SettingsViewModel, modifier: Modifier = Modifier) 
 }
 
 @Composable
-private fun SettingsSection(
+fun SettingsSection(
     label: String,
     defaultValue: Int,
     optionsList: List<Int>,

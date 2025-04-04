@@ -40,4 +40,12 @@
     <string name="ok">OK</string>
     <string name="selected_time_is_in_the_past">Selected time is in the past!</string>
     <string name="cancel">Cancel</string>
+    <string name="notification">Notification</string>
+    <string name="current_location">Current location</string>
+    <string name="alarm_type">Alarm Type</string>
+    <string name="city">City</string>
+    <string name="please_enter_date_and_time">Please Enter date and time</string>
+    <string name="alarms">Alarms</string>
+    <string name="no_active_alarms">No active alarms</string>
+    <string name="no_favourites_city_added">No favourites city added</string>
 </resources>

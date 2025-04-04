@@ -1,6 +1,8 @@
 package eg.edu.iti.weathify.core.navigation
 
 import android.content.Context
+import android.os.Build
+import androidx.annotation.RequiresApi
 import eg.edu.iti.weathify.map.view.MapScreen
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,6 +30,7 @@ import eg.edu.iti.weathify.map.viewModel.MapViewModelFactory
 import eg.edu.iti.weathify.settings.view.SettingsScreen
 import eg.edu.iti.weathify.settings.viewModel.SettingsViewModelFactory
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NavComponent(
     navHostController: NavHostController,
@@ -46,6 +49,7 @@ fun NavComponent(
             WeatherRemoteDataSourceImpl(RetrofitHelper.serviceApi, RetrofitHelper.searchApi),
             WeatherLocalDataSourceImpl(
                 WeatherDataBase.getInstance(context).getFavouriteDao(),
+                WeatherDataBase.getInstance(context).getAlarmDao(),
                 context.getSharedPreferences("settings", Context.MODE_PRIVATE)
             )
         )
@@ -73,7 +77,7 @@ fun NavComponent(
         composable<ScreenRoutes.AlarmScreenRoute> {
 //            HomeScreen(long = lon, lat = lat, viewModel(factory = HomeViewModelFactory(repo)))
 
-            AlarmScreen(viewModel = viewModel(factory = AlarmViewModelFactory(repo)))
+            AlarmScreen(viewModel = viewModel(factory = AlarmViewModelFactory(repo)),lon.value,lat.value)
         }
         composable<ScreenRoutes.SettingScreenRoute> {
 
