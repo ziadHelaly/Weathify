@@ -31,6 +31,18 @@ class WeatherLocalDataSourceImpl(
         return sharedPreferences.getInt(key, 2002)
     }
 
+    override fun saveCityInSharedPref(lon: String, lat: String) {
+        sharedPreferences.edit().putString("city_lon", lon).apply()
+        sharedPreferences.edit().putString("city_lat", lat).apply()
+    }
+
+    override fun getCityFromSharedPref(): Pair<String?, String?> {
+        return sharedPreferences.getString(
+            "city_lon",
+            null
+        ) to sharedPreferences.getString("city_lat", null)
+    }
+
     override suspend fun getAlarms(): Flow<List<Alarm>> {
         return alarmDao.getAlarms()
     }

@@ -5,10 +5,10 @@ import kotlinx.serialization.Serializable
 @Serializable
 sealed class ScreenRoutes {
     @Serializable
-    object MapScreenRoute :ScreenRoutes()
+    data class MapScreenRoute(val settingsMode:Boolean) :ScreenRoutes()
 
     @Serializable
-    data class HomeScreenRoute(val lon:String?,val lat:String?) : ScreenRoutes()
+    data class HomeScreenRoute(val lon:String?,val lat:String?,val isHome:Boolean) : ScreenRoutes()
 
     @Serializable
     object FavScreenRoute : ScreenRoutes()

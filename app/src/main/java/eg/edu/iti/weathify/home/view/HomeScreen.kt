@@ -63,6 +63,7 @@ fun HomeScreen(
     long: MutableState<String>,
     lat: MutableState<String>,
     viewModel: HomeViewModel,
+    isHome:Boolean,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -71,10 +72,17 @@ fun HomeScreen(
 
     LaunchedEffect(long.value) {
         Log.d("``TAG``", "HomeScreen: ${long.value} , ${lat.value}")
-        if (long.value != "0.0") {
-            viewModel.getWeather(long.value, lat.value)
-            viewModel.getAddress(Geocoder(context, Locale.getDefault()), lat.value.toDouble(), long.value.toDouble())
+        if (isHome){
+            if (long.value != "0.0") {
+                viewModel.getWeatherForHome(long.value, lat.value)
+            }
+        }else{
+            if (long.value != "0.0") {
+                viewModel.getWeather(long.value, lat.value)
+            }
         }
+        viewModel.getAddress(Geocoder(context, Locale.getDefault()), lat.value.toDouble(), long.value.toDouble(),isHome)
+
     }
 
     when (currentWeather) {

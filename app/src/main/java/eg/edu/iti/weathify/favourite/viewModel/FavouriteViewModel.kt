@@ -14,6 +14,10 @@ class FavouriteViewModel(private val repository: WeatherRepository) : ViewModel(
     private val _allFavourite = MutableStateFlow<List<FavouritePlace>>(arrayListOf())
     val allFavourites: StateFlow<List<FavouritePlace>> = _allFavourite
 
+    private val _message = MutableStateFlow("")
+    val message: MutableStateFlow<String> = _message
+
+    private var tempCity=FavouritePlace("","","")
     init {
         getFavourites()
     }
@@ -25,18 +29,27 @@ class FavouriteViewModel(private val repository: WeatherRepository) : ViewModel(
             }
         }
     }
-    fun addToFav(place: FavouritePlace){
-        viewModelScope.launch (Dispatchers.IO){
-            val result=repository.addPlaceToFav(place)
-//            if (result>0)
+
+    fun addToFav(place: FavouritePlace) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.addPlaceToFav(place)
         }
     }
-    fun removeFromFavs(place: FavouritePlace){
+
+    fun removeFromFavs(place: FavouritePlace) {
         viewModelScope.launch(Dispatchers.IO) {
-            val result=repository.removePlaceFromFav(place)
-            if (result>0){
-                Log.d("`TAG`", "removeFromFavs: Done")
+            val result = repository.removePlaceFromFav(place)
+            if (result > 0) {
+                _message.value = "City deleted successfully"
+                tempCity=place
             }
         }
     }
+    fun resetMessage(){
+        _message.value=""
+    }
+    fun undo(){
+        addToFav(tempCity)
+    }
+
 }

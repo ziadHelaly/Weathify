@@ -3,11 +3,13 @@ package eg.edu.iti.weathify.core
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -43,6 +45,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var latitude: MutableState<String>
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen().setKeepOnScreenCondition { showSplash }
         hideSplash()
@@ -67,7 +70,7 @@ class MainActivity : ComponentActivity() {
                     latitude = rememberSaveable { mutableStateOf("0.0") }
                     NavComponent(
                         navHostController = navController,
-                        startDestination = ScreenRoutes.HomeScreenRoute(null,null),
+                        startDestination = ScreenRoutes.HomeScreenRoute(null,null,true),
                         lat = latitude,
                         lon = longitude,
                         modifier = Modifier

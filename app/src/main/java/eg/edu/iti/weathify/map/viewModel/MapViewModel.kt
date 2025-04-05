@@ -70,4 +70,7 @@ class MapViewModel(private val repository: WeatherRepository) : ViewModel() {
         _selectedLocation.value = Triple(lat, lon,name)
         _searchResults.value = emptyList()
     }
+    fun saveInShPr(lon:String,lat:String){
+        repository.saveCityInSHP(lon,lat)
+    }
 }

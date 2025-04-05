@@ -15,4 +15,6 @@ interface WeatherLocalDataSource {
     suspend fun addAlarm(alarm: Alarm): Long
     suspend fun deleteAlarm(alarm: Alarm): Int
     suspend fun deleteAlarmById(id: String)
+    fun saveCityInSharedPref(lon: String, lat: String)
+    fun getCityFromSharedPref(): Pair<String?, String?>
 }

@@ -34,7 +34,11 @@ import eg.edu.iti.weathify.settings.viewModel.SettingsViewModel
 import eg.edu.iti.weathify.utils.LocaleHelper.Companion.saveLanguagePreference
 
 @Composable
-fun SettingsScreen(viewModel: SettingsViewModel, modifier: Modifier = Modifier) {
+fun SettingsScreen(
+    viewModel: SettingsViewModel,
+    modifier: Modifier = Modifier,
+    navToMap: () -> Unit
+) {
     val context = LocalContext.current
 
     val temp by viewModel.currentTempUnit.collectAsStateWithLifecycle()
@@ -70,6 +74,9 @@ fun SettingsScreen(viewModel: SettingsViewModel, modifier: Modifier = Modifier) 
             viewModel.locationOptions
         ) {
             viewModel.updateLocationSetting(it)
+            if (it == R.string.map){
+                navToMap()
+            }
         }
     }
 }

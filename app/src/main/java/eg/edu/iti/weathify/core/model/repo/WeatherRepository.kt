@@ -22,4 +22,6 @@ interface WeatherRepository {
     suspend fun addAlarm(alarm: Alarm): Long
     suspend fun deleteAlarm(alarm: Alarm): Int
     suspend fun deleteAlarmById(id: String)
+    fun saveCityInSHP(lon: String, lat: String)
+    fun getCityFromSHP(): Pair<String?, String?>
 }

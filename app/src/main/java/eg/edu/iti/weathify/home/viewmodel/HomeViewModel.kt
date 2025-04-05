@@ -1,12 +1,14 @@
 package eg.edu.iti.weathify.home.viewmodel
 
 import android.location.Geocoder
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import eg.edu.iti.weathify.R
 import eg.edu.iti.weathify.core.model.models.WeatherResponse
 import eg.edu.iti.weathify.core.model.repo.WeatherRepository
 import eg.edu.iti.weathify.utils.Constants.Companion.LANGUAGE_KEY
+import eg.edu.iti.weathify.utils.Constants.Companion.LOCATION_KEY
 import eg.edu.iti.weathify.utils.Constants.Companion.TEMP_KEY
 import eg.edu.iti.weathify.utils.Constants.Companion.WIND_KEY
 import eg.edu.iti.weathify.utils.ConvertUnitsUtil.toF
@@ -60,6 +62,31 @@ class HomeViewModel(private val repository: WeatherRepository) : ViewModel() {
         }
     }
 
+    fun getWeatherForHome(long: String, lat: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val lang = repository.getFromSharedPref(LANGUAGE_KEY)
+            val isMapProvider = repository.getFromSharedPref(LOCATION_KEY) == R.string.map
+            Log.d("`TAG`", "getWeatherForHome: map? $isMapProvider")
+            val l = when (lang) {
+                R.string.arabic -> "ar"
+                R.string.english -> "en"
+                else -> "en"
+            }
+            val result = if (isMapProvider) {
+                val lonLat = repository.getCityFromSHP()
+                Log.d("``TAG``", "getWeatherForHome: $lonLat")
+                repository.getCurrentWeather(lonLat.second ?: lat, lonLat.first ?: long, l)
+            } else {
+                repository.getCurrentWeather(lat, long, l)
+            }
+            if (result is Result.Success) {
+                _currentWeather.value = Result.Success(result.data)
+            } else {
+                _currentWeather.value = Result.Failure((result as Result.Failure).message)
+            }
+        }
+    }
+
     private fun loadSettings() {
         repository.getFromSharedPref(TEMP_KEY).let {
             if (it != 2002) {
@@ -105,10 +132,17 @@ class HomeViewModel(private val repository: WeatherRepository) : ViewModel() {
         return formatter.format(dt)
     }
 
-    fun getAddress(geoCoder: Geocoder, lati: Double, long: Double) {
+    fun getAddress(geoCoder: Geocoder, lati: Double, long: Double,isHome:Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val res = geoCoder.getFromLocation(lati, long, 1)
+                val isMapProvider = repository.getFromSharedPref(LOCATION_KEY) == R.string.map
+                val lonLat = repository.getCityFromSHP()
+                val res = if (isMapProvider && isHome)
+                    geoCoder.getFromLocation(
+                        lonLat.first?.toDouble() ?: long,
+                        lonLat.second?.toDouble() ?: lati,
+                        1
+                    ) else geoCoder.getFromLocation(lati, long, 1)
                 if (!res.isNullOrEmpty()) {
                     _address.value = "${res[0].subAdminArea}, ${res[0].adminArea}"
                 } else {

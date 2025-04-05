@@ -53,40 +53,60 @@ fun NavComponent(
                 context.getSharedPreferences("settings", Context.MODE_PRIVATE)
             )
         )
-        composable<ScreenRoutes.HomeScreenRoute> { it ->
+        composable<ScreenRoutes.HomeScreenRoute> {
             val args: ScreenRoutes.HomeScreenRoute = it.toRoute()
+            val isHome = args.isHome
             if (!args.lat.isNullOrEmpty() && !args.lon.isNullOrEmpty()) {
                 HomeScreen(
                     long = mutableStateOf(args.lon),
                     lat = mutableStateOf(args.lat),
-                    viewModel(factory = HomeViewModelFactory(repo))
+                    viewModel(factory = HomeViewModelFactory(repo)),
+                    isHome
                 )
             } else {
-                HomeScreen(long = lon, lat = lat, viewModel(factory = HomeViewModelFactory(repo)))
+                HomeScreen(
+                    long = lon,
+                    lat = lat,
+                    viewModel(factory = HomeViewModelFactory(repo)),
+                    isHome
+                )
             }
         }
         composable<ScreenRoutes.FavScreenRoute> {
             FavouriteScreen(
                 viewModel = viewModel(factory = FavouriteViewModelFactory(repo)),
                 navToHome = { longitude, latitude ->
-                    navHostController.navigate(ScreenRoutes.HomeScreenRoute(longitude, latitude))
+                    navHostController.navigate(
+                        ScreenRoutes.HomeScreenRoute(
+                            longitude,
+                            latitude,
+                            false
+                        )
+                    )
                 }) {
-                navHostController.navigate(ScreenRoutes.MapScreenRoute)
+                navHostController.navigate(ScreenRoutes.MapScreenRoute(false))
             }
         }
         composable<ScreenRoutes.AlarmScreenRoute> {
-//            HomeScreen(long = lon, lat = lat, viewModel(factory = HomeViewModelFactory(repo)))
-
-            AlarmScreen(viewModel = viewModel(factory = AlarmViewModelFactory(repo)),lon.value,lat.value)
+            AlarmScreen(
+                viewModel = viewModel(factory = AlarmViewModelFactory(repo)),
+                lon.value,
+                lat.value
+            )
         }
         composable<ScreenRoutes.SettingScreenRoute> {
 
-            SettingsScreen(viewModel = viewModel(factory = SettingsViewModelFactory(repo)))
+            SettingsScreen(viewModel = viewModel(factory = SettingsViewModelFactory(repo))) {
+                navHostController.navigate(ScreenRoutes.MapScreenRoute(true))
+            }
         }
         composable<ScreenRoutes.MapScreenRoute> {
+            val args: ScreenRoutes.MapScreenRoute = it.toRoute()
+            val isSettingsMode = args.settingsMode
             MapScreen(
                 viewModel = viewModel(factory = MapViewModelFactory(repo)),
-                modifier = modifier
+                modifier = modifier,
+                isSettingsMode
             ) {
                 navHostController.popBackStack()
             }

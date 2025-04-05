@@ -16,7 +16,12 @@ import eg.edu.iti.weathify.map.viewModel.MapViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MapScreen(viewModel: MapViewModel, modifier: Modifier = Modifier, onNavBack: () -> Unit) {
+fun MapScreen(
+    viewModel: MapViewModel,
+    modifier: Modifier = Modifier,
+    settingMode: Boolean,
+    onNavBack: () -> Unit
+) {
     val searchResults by viewModel.searchResults.collectAsState()
     val selectedLocation by viewModel.selectedLocation.collectAsState()
 
@@ -76,11 +81,16 @@ fun MapScreen(viewModel: MapViewModel, modifier: Modifier = Modifier, onNavBack:
             modifier = Modifier.align(Alignment.BottomCenter),
             onClick = {
                 selectedLocation.let { (lat, lon, name) ->
-                    viewModel.addToFav(lat, lon, name)
+
+                    if (settingMode) viewModel.saveInShPr(
+                        lon.toString(),
+                        lat.toString()
+                    ) else viewModel.addToFav(lat, lon, name)
                     onNavBack()
                 }
             }) {
-            Text(stringResource(R.string.add_to_fav))
+            if (settingMode)Text(stringResource(R.string.set_as_default))
+            else Text(stringResource(R.string.add_to_fav))
         }
     }
 }

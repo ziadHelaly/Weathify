@@ -49,4 +49,6 @@
     <string name="no_active_alarms">No active alarms</string>
     <string name="no_favourites_city_added">No favourites city added</string>
     <string name="title_activity_alert">AlertActivity</string>
+    <string name="undo">Undo</string>
+    <string name="set_as_default">Set as Default</string>
 </resources>

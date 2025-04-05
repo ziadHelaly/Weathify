@@ -14,11 +14,17 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -28,21 +34,39 @@ import eg.edu.iti.weathify.core.view.components.FAB
 import eg.edu.iti.weathify.favourite.viewModel.FavouriteViewModel
 
 @Composable
-fun FavouriteScreen(viewModel: FavouriteViewModel,navToHome:(String,String)->Unit ,navToMap: () -> Unit) {
+fun FavouriteScreen(
+    viewModel: FavouriteViewModel,
+    navToHome: (String, String) -> Unit,
+    navToMap: () -> Unit
+) {
     val favs by viewModel.allFavourites.collectAsStateWithLifecycle()
+    val snackbarState = remember { SnackbarHostState() }
+    val message by viewModel.message.collectAsStateWithLifecycle()
+    val context = LocalContext.current
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbarState) },
         floatingActionButton = {
             FAB {
                 navToMap()
             }
         }, modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+
     ) { paddingValues ->
+        LaunchedEffect(message) {
+            if (message.isNotBlank()) {
+                val res=snackbarState.showSnackbar(message, context.getString(R.string.undo))
+                if (res ==SnackbarResult.ActionPerformed){
+                    viewModel.undo()
+                }
+            }
+            viewModel.resetMessage()
+        }
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
+                .padding(horizontal = 16.dp)
         ) {
             Text(
                 stringResource(R.string.favourites_cities),
@@ -55,14 +79,17 @@ fun FavouriteScreen(viewModel: FavouriteViewModel,navToHome:(String,String)->Uni
                     FavouriteItem(
                         name = fav.name,
                         onDisplayClick = {
-                            navToHome(fav.longitude,fav.latitude)
+                            navToHome(fav.longitude, fav.latitude)
                         }) {
                         viewModel.removeFromFavs(fav)
                     }
                 }
             }
-            if (favs.isEmpty()){
-                Text(stringResource(R.string.no_favourites_city_added), style = MaterialTheme.typography.bodyLarge)
+            if (favs.isEmpty()) {
+                Text(
+                    stringResource(R.string.no_favourites_city_added),
+                    style = MaterialTheme.typography.bodyLarge
+                )
             }
         }
     }

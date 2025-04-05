@@ -47,4 +47,7 @@
     <string name="alarms">التنبيهات</string>
     <string name="no_active_alarms">لا تنبيهات مفعلة</string>
     <string name="no_favourites_city_added">لا يوجد مدن مفضلة</string>
+    <string name="title_activity_alert">AlertActivity</string>
+    <string name="undo">تراجع</string>
+    <string name="set_as_default">تعيين كموقع رئيسي</string>
 </resources>
