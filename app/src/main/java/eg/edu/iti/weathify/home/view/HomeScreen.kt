@@ -58,6 +58,7 @@ import eg.edu.iti.weathify.core.model.models.WeatherResponse
 import eg.edu.iti.weathify.home.viewmodel.FormatTypes
 import eg.edu.iti.weathify.home.viewmodel.HomeViewModel
 import eg.edu.iti.weathify.utils.Constants.Companion.imageLink
+import eg.edu.iti.weathify.utils.LocaleHelper.Companion.localized
 import eg.edu.iti.weathify.utils.NetworkMonitor
 import eg.edu.iti.weathify.utils.Result
 import java.util.Locale
@@ -222,7 +223,7 @@ private fun DegreeSection(
                 modifier = Modifier.size(100.dp)
             )
             Row {
-                Text(viewModel.convertTempUnits(current.temp).toInt().toString(), fontSize = 72.sp)
+                Text(viewModel.convertTempUnits(current.temp).toInt().localized(), fontSize = 72.sp)
                 Text(stringResource(tempUnit), fontSize = 28.sp)
             }
             Text(current.weather[0].description, fontSize = 24.sp)
@@ -252,7 +253,7 @@ private fun ForeCastSection(
         ForeCastItem(
             painterResource(R.drawable.ic_hum),
             stringResource(R.string.humidity),
-            current.humidity.toString(),
+            current.humidity.localized(),
             "%"
         )
     }
@@ -264,14 +265,14 @@ private fun ForeCastSection(
         ForeCastItem(
             painterResource(R.drawable.ic_cloud),
             stringResource(R.string.clouds),
-            current.clouds.toString(),
+            current.clouds.localized(),
             "%"
         )
 
         ForeCastItem(
             painterResource(R.drawable.ic_pressure),
             stringResource(R.string.air_pressure),
-            current.pressure.toString(),
+            current.pressure.localized(),
             stringResource(R.string.hpa)
         )
 
@@ -302,7 +303,7 @@ private fun HourlySection(
             HourCard(
                 time = viewModel.formatTime(hour.dt.toLong(), FormatTypes.hour, current.timezone),
                 icon = hour.weather[0].icon,
-                temp = viewModel.convertTempUnits(hour.temp).toInt().toString(),
+                temp = viewModel.convertTempUnits(hour.temp).toInt().localized(),
                 tempUnit = tempUnit
             )
         }
@@ -381,8 +382,8 @@ private fun DailySection(
                     },
                     description = day.weather[0].description,
                     icon = day.weather[0].icon,
-                    min = viewModel.convertTempUnits(day.temp.min).toInt().toString(),
-                    max = viewModel.convertTempUnits(day.temp.max).toInt().toString(),
+                    min = viewModel.convertTempUnits(day.temp.min).toInt().localized(),
+                    max = viewModel.convertTempUnits(day.temp.max).toInt().localized(),
                     unit = stringResource(tempUnit),
                 )
             }

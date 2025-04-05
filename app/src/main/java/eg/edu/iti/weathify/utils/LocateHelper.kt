@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.os.Build
+import java.text.NumberFormat
 import java.util.Locale
 
 class LocaleHelper {
@@ -30,6 +31,9 @@ class LocaleHelper {
         fun saveLanguagePreference(context: Context, languageCode: String) {
             val prefs = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
             prefs.edit().putString("app_language", languageCode).apply()
+        }
+        fun Int.localized(locale: Locale = Locale.getDefault()): String {
+            return NumberFormat.getInstance(locale).format(this)
         }
     }
 }

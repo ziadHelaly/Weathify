@@ -17,8 +17,8 @@
     <string name="hpa">ب</string>
     <string name="gps">نظام تحديد المواقع</string>
     <string name="map">الخريطة</string>
-    <string name="next_24_hours">الـ 24 ساعة القادمة</string>
-    <string name="next_7_days">الأيام الـ 7 القادمة</string>
+    <string name="next_24_hours">الـ ٢٤ ساعة القادمة</string>
+    <string name="next_7_days">الأيام الـ ٧ القادمة</string>
     <string name="today">اليوم</string>
     <string name="tomorrow">غدًا</string>
     <string name="add_to_fav">إضافة إلى المفضلة</string>
