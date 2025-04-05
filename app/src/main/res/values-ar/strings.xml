@@ -50,4 +50,5 @@
     <string name="title_activity_alert">AlertActivity</string>
     <string name="undo">تراجع</string>
     <string name="set_as_default">تعيين كموقع رئيسي</string>
+    <string name="no_internet_connect_to_get_fresh_data">لا يوجد اتصال, اتصل بالانترنت لتحصل على بيانات محدثة</string>
 </resources>

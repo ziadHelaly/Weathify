@@ -5,6 +5,7 @@ import android.content.Context
 import android.location.Geocoder
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,11 +27,13 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -54,6 +57,7 @@ import eg.edu.iti.weathify.core.model.models.WeatherResponse
 import eg.edu.iti.weathify.home.viewmodel.FormatTypes
 import eg.edu.iti.weathify.home.viewmodel.HomeViewModel
 import eg.edu.iti.weathify.utils.Constants.Companion.imageLink
+import eg.edu.iti.weathify.utils.NetworkMonitor
 import eg.edu.iti.weathify.utils.Result
 import java.util.Locale
 
@@ -69,6 +73,8 @@ fun HomeScreen(
     val context = LocalContext.current
     val currentWeather by viewModel.currentWeather.collectAsStateWithLifecycle()
     val address by viewModel.address.collectAsStateWithLifecycle()
+    val networkMonitor = remember { NetworkMonitor(context) }
+    val isConnected by networkMonitor.isConnected.collectAsStateWithLifecycle()
 
     LaunchedEffect(long.value) {
         Log.d("``TAG``", "HomeScreen: ${long.value} , ${lat.value}")
@@ -104,7 +110,8 @@ fun HomeScreen(
             Screen(
                 country = address,
                 current = (currentWeather as Result.Success).data,
-                viewModel = viewModel
+                viewModel = viewModel,
+                isConnected = isConnected
             )
         }
     }
@@ -117,7 +124,8 @@ private fun Screen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel,
     country: String,
-    current: WeatherResponse
+    current: WeatherResponse,
+    isConnected:Boolean
 ) {
     val tempUnit by viewModel.tempUnit.collectAsStateWithLifecycle()
     val windUnit by viewModel.windUnit.collectAsStateWithLifecycle()
@@ -165,6 +173,17 @@ private fun Screen(
             ForeCastSection(current.current, viewModel, windUnit)
             HourlySection(current.hourly, viewModel, current, tempUnit = tempUnit)
             DailySection(viewModel, current.daily, current, tempUnit = tempUnit)
+        }
+        if (!isConnected){
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
+                    .background(MaterialTheme.colorScheme.errorContainer)
+            ) {
+                Text(stringResource(R.string.no_internet_connect_to_get_fresh_data), style = MaterialTheme.typography.bodyLarge)
+            }
         }
     }
 

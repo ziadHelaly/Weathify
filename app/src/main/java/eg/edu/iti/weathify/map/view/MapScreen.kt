@@ -81,7 +81,6 @@ fun MapScreen(
             modifier = Modifier.align(Alignment.BottomCenter),
             onClick = {
                 selectedLocation.let { (lat, lon, name) ->
-
                     if (settingMode) viewModel.saveInShPr(
                         lon.toString(),
                         lat.toString()

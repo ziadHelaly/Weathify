@@ -5,8 +5,6 @@ import eg.edu.iti.weathify.utils.Constants.Companion.BASE_URL
 import eg.edu.iti.weathify.utils.Constants.Companion.SEARCH_URL
 import eg.edu.iti.weathify.utils.NetworkUtil.isConnected
 import okhttp3.Cache
-import okhttp3.HttpUrl
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

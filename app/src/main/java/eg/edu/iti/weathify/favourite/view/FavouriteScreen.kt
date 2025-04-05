@@ -14,6 +14,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
@@ -55,7 +56,11 @@ fun FavouriteScreen(
     ) { paddingValues ->
         LaunchedEffect(message) {
             if (message.isNotBlank()) {
-                val res=snackbarState.showSnackbar(message, context.getString(R.string.undo))
+                val res=snackbarState.showSnackbar(
+                    message,
+                    context.getString(R.string.undo),
+                    duration = SnackbarDuration.Short
+                )
                 if (res ==SnackbarResult.ActionPerformed){
                     viewModel.undo()
                 }
