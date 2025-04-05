@@ -55,7 +55,7 @@ class WeatherLocalDataSourceImpl(
         return alarmDao.deleteAlarm(alarm)
     }
 
-    override suspend fun deleteAlarmById(id: String) {
+    override suspend fun deleteAlarmById(id: String): Int {
         return alarmDao.deleteAlarmById(id)
     }
 

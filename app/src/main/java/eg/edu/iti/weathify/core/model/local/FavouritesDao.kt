@@ -13,9 +13,12 @@ interface FavouritesDao {
     @Query("select * from favouriteplace")
     fun getAllFavourites(): Flow<List<FavouritePlace>>
 
+    @Query("select * from favouriteplace where name = :n")
+    fun getPlaceByName(n: String): FavouritePlace
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun addPlaceToFavourite(place: FavouritePlace):Long
+    suspend fun addPlaceToFavourite(place: FavouritePlace): Long
 
     @Delete
-    suspend fun removeFromFavourite(place: FavouritePlace):Int
+    suspend fun removeFromFavourite(place: FavouritePlace): Int
 }

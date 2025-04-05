@@ -20,6 +20,6 @@ interface AlarmDao {
     suspend fun deleteAlarm(alarm: Alarm): Int
 
     @Query("delete from alarm_table where id = :alarmId")
-    suspend fun deleteAlarmById(alarmId: String)
+    suspend fun deleteAlarmById(alarmId: String):Int
 
 }

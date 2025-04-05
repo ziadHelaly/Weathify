@@ -79,7 +79,7 @@ class WeatherRepositoryImpl private constructor(
         return localDataSource.deleteAlarm(alarm)
     }
 
-    override suspend fun deleteAlarmById(id: String) {
+    override suspend fun deleteAlarmById(id: String): Int {
         return localDataSource.deleteAlarmById(id)
     }
     override fun saveCityInSHP(lon:String,lat:String){

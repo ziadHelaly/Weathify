@@ -14,7 +14,7 @@ interface WeatherLocalDataSource {
     suspend fun getAlarms(): Flow<List<Alarm>>
     suspend fun addAlarm(alarm: Alarm): Long
     suspend fun deleteAlarm(alarm: Alarm): Int
-    suspend fun deleteAlarmById(id: String)
+    suspend fun deleteAlarmById(id: String): Int
     fun saveCityInSharedPref(lon: String, lat: String)
     fun getCityFromSharedPref(): Pair<String?, String?>
 }

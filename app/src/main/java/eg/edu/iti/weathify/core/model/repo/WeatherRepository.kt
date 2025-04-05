@@ -21,7 +21,7 @@ interface WeatherRepository {
     suspend fun getAlarms(): Flow<List<Alarm>>
     suspend fun addAlarm(alarm: Alarm): Long
     suspend fun deleteAlarm(alarm: Alarm): Int
-    suspend fun deleteAlarmById(id: String)
+    suspend fun deleteAlarmById(id: String): Int
     fun saveCityInSHP(lon: String, lat: String)
     fun getCityFromSHP(): Pair<String?, String?>
 }

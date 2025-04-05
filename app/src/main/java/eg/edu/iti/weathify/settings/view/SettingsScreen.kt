@@ -58,7 +58,7 @@ fun SettingsScreen(
             viewModel.updateLanguageSetting(it)
             saveLanguagePreference(
                 context,
-                if (it == R.string.arabic) "ar" else if (it == R.string.english) "en" else "en"
+                if (it == R.string.arabic) "ar" else if (it == R.string.english) "en" else "default"
             )
             (context as Activity).recreate()
         }

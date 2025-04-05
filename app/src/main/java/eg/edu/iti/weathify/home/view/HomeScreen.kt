@@ -32,6 +32,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -74,7 +75,7 @@ fun HomeScreen(
     val currentWeather by viewModel.currentWeather.collectAsStateWithLifecycle()
     val address by viewModel.address.collectAsStateWithLifecycle()
     val networkMonitor = remember { NetworkMonitor(context) }
-    val isConnected by networkMonitor.isConnected.collectAsStateWithLifecycle()
+    val isConnected by networkMonitor.isConnected.collectAsState()
 
     LaunchedEffect(long.value) {
         Log.d("``TAG``", "HomeScreen: ${long.value} , ${lat.value}")
@@ -264,7 +265,7 @@ private fun ForeCastSection(
             painterResource(R.drawable.ic_cloud),
             stringResource(R.string.clouds),
             current.clouds.toString(),
-            ""
+            "%"
         )
 
         ForeCastItem(
