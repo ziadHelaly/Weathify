@@ -45,6 +45,7 @@ fun NavComponent(
         startDestination = startDestination,
         modifier = modifier
     ) {
+        RetrofitHelper.createApis(context)
         val repo = WeatherRepositoryImpl.getInstance(
             WeatherRemoteDataSourceImpl(RetrofitHelper.serviceApi, RetrofitHelper.searchApi),
             WeatherLocalDataSourceImpl(
