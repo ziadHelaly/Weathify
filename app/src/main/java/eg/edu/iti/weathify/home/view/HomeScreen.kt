@@ -1,7 +1,6 @@
 package eg.edu.iti.weathify.home.view
 
 
-import android.content.Context
 import android.location.Geocoder
 import android.util.Log
 import androidx.compose.foundation.Image
@@ -30,11 +29,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -47,6 +48,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -60,6 +64,7 @@ import eg.edu.iti.weathify.home.viewmodel.HomeViewModel
 import eg.edu.iti.weathify.utils.Constants.Companion.imageLink
 import eg.edu.iti.weathify.utils.LocaleHelper.Companion.localized
 import eg.edu.iti.weathify.utils.NetworkMonitor
+import eg.edu.iti.weathify.utils.NetworkUtil
 import eg.edu.iti.weathify.utils.Result
 import java.util.Locale
 
@@ -69,27 +74,66 @@ fun HomeScreen(
     long: MutableState<String>,
     lat: MutableState<String>,
     viewModel: HomeViewModel,
-    isHome:Boolean,
-    modifier: Modifier = Modifier
+    isHome: Boolean,
 ) {
     val context = LocalContext.current
+    val owner = LocalLifecycleOwner.current
     val currentWeather by viewModel.currentWeather.collectAsStateWithLifecycle()
     val address by viewModel.address.collectAsStateWithLifecycle()
-    val networkMonitor = remember { NetworkMonitor(context) }
-    val isConnected by networkMonitor.isConnected.collectAsState()
+    var isNetworkBarVisible by remember { mutableStateOf(false) }
+    val networkMonitor = remember {
+        NetworkMonitor(
+            onNetworkAvailable = {
+                isNetworkBarVisible = false
+            },
+            onNetworkLost = {
+                isNetworkBarVisible = true
+            }
+        )
+    }
 
+    DisposableEffect(owner) {
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_START -> {
+                    networkMonitor.registerNetworkCallbacks(context)
+                    isNetworkBarVisible = !NetworkUtil.isConnected(context)
+                }
+
+                Lifecycle.Event.ON_PAUSE -> {
+                    networkMonitor.unregisterNetworkCallbacks(context)
+                }
+
+                Lifecycle.Event.ON_DESTROY -> {
+                    networkMonitor.unregisterNetworkCallbacks(context)
+                }
+
+                else -> {}
+            }
+        }
+
+        owner.lifecycle.addObserver(observer)
+        onDispose {
+            owner.lifecycle.removeObserver(observer)
+        }
+    }
     LaunchedEffect(long.value) {
         Log.d("``TAG``", "HomeScreen: ${long.value} , ${lat.value}")
-        if (isHome){
+        if (isHome) {
             if (long.value != "0.0") {
                 viewModel.getWeatherForHome(long.value, lat.value)
             }
-        }else{
+        } else {
             if (long.value != "0.0") {
                 viewModel.getWeather(long.value, lat.value)
             }
         }
-        viewModel.getAddress(Geocoder(context, Locale.getDefault()), lat.value.toDouble(), long.value.toDouble(),isHome)
+        viewModel.getAddress(
+            Geocoder(context, Locale.getDefault()),
+            lat.value.toDouble(),
+            long.value.toDouble(),
+            isHome
+        )
 
     }
 
@@ -105,7 +149,6 @@ fun HomeScreen(
 
         is Result.Failure -> {
             Text((currentWeather as Result.Failure).message)
-            //Todo failure screen
         }
 
         is Result.Success -> {
@@ -113,21 +156,19 @@ fun HomeScreen(
                 country = address,
                 current = (currentWeather as Result.Success).data,
                 viewModel = viewModel,
-                isConnected = isConnected
+                isConnected = !isNetworkBarVisible
             )
         }
     }
 
 }
 
-
 @Composable
 private fun Screen(
-    modifier: Modifier = Modifier,
     viewModel: HomeViewModel,
     country: String,
     current: WeatherResponse,
-    isConnected:Boolean
+    isConnected: Boolean
 ) {
     val tempUnit by viewModel.tempUnit.collectAsStateWithLifecycle()
     val windUnit by viewModel.windUnit.collectAsStateWithLifecycle()
@@ -176,7 +217,7 @@ private fun Screen(
             HourlySection(current.hourly, viewModel, current, tempUnit = tempUnit)
             DailySection(viewModel, current.daily, current, tempUnit = tempUnit)
         }
-        if (!isConnected){
+        if (!isConnected) {
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
@@ -184,7 +225,10 @@ private fun Screen(
                     .align(Alignment.BottomCenter)
                     .background(MaterialTheme.colorScheme.errorContainer)
             ) {
-                Text(stringResource(R.string.no_internet_connect_to_get_fresh_data), style = MaterialTheme.typography.bodyLarge)
+                Text(
+                    stringResource(R.string.no_internet_connect_to_get_fresh_data),
+                    style = MaterialTheme.typography.bodyLarge
+                )
             }
         }
     }
@@ -197,7 +241,6 @@ private fun DegreeSection(
     current: Current,
     date: String,
     viewModel: HomeViewModel,
-    modifier: Modifier = Modifier,
     tempUnit: Int
 ) {
     Card(
@@ -236,7 +279,6 @@ private fun ForeCastSection(
     current: Current,
     viewModel: HomeViewModel,
     windUnit: Int,
-    modifier: Modifier = Modifier
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -281,7 +323,7 @@ private fun ForeCastSection(
 
 
 @Composable
-private fun LocationSection(country: String, modifier: Modifier = Modifier) {
+private fun LocationSection(country: String) {
     Row {
         Icon(painterResource(R.drawable.ic_location), contentDescription = "")
         Spacer(Modifier.width(4.dp))
@@ -294,7 +336,6 @@ private fun HourlySection(
     hours: List<Hourly>,
     viewModel: HomeViewModel,
     current: WeatherResponse,
-    modifier: Modifier = Modifier,
     tempUnit: Int
 ) {
     Text(stringResource(R.string.next_24_hours), fontSize = 16.sp, fontWeight = FontWeight.Bold)
@@ -313,7 +354,6 @@ private fun HourlySection(
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 private fun HourCard(
-    modifier: Modifier = Modifier,
     time: String,
     icon: String,
     temp: String,
@@ -355,7 +395,6 @@ private fun DailySection(
     viewModel: HomeViewModel,
     days: List<Daily>,
     current: WeatherResponse,
-    modifier: Modifier = Modifier,
     tempUnit: Int
 ) {
     Text(stringResource(R.string.next_7_days), fontSize = 16.sp, fontWeight = FontWeight.Bold)
@@ -397,7 +436,6 @@ private fun DailySection(
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 private fun DailyCard(
-    modifier: Modifier = Modifier,
     dayTitle: String,
     description: String,
     min: String,
